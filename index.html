@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الوحدات في الورشة</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>إدارة الوحدات في الورشة</h1>
+
+    <button id="addUnitButton">أضف وحدة جديدة</button>
+
+    <div class="main-container">
+        
+        <div id="waiting-workshop" class="drop-zone">
+            <h2>منطقة انتظار (Waiting Workshop)</h2>
+        </div>
+
+        <div id="workshop" class="drop-zone">
+            <h2>الورشة الرئيسية (WorkShop)</h2>
+            <div class="workshop-sections">
+                <div id="cargo" class="subsection-drop-zone">
+                    <h3>Cargo</h3>
+                </div>
+                <div id="tipper" class="subsection-drop-zone">
+                    <h3>Tipper</h3>
+                </div>
+                <div id="tanker" class="subsection-drop-zone">
+                    <h3>Tanker</h3>
+                </div>
+                <div id="silo" class="subsection-drop-zone">
+                    <h3>Silo</h3>
+                </div>
+                <div id="rehb" class="subsection-drop-zone">
+                    <h3>Rehb</h3>
+                </div>
+                <div id="overhaul" class="subsection-drop-zone">
+                    <h3>OverHaull</h3>
+                </div>
+                <div id="spare-part" class="subsection-drop-zone">
+                    <h3>Spare Part</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="out-workshop" class="drop-zone">
+            <h2>خارج الورشة (OutWorkShop)</h2>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
