@@ -24,7 +24,7 @@ body {
     padding: 30px 20px;
     background: linear-gradient(135deg, var(--light-grey) 0%, var(--medium-grey) 100%); /* خلفية متدرجة */
     color: var(--dark-grey);
-    overflow-x: hidden;
+    overflow-x: auto; /* السماح بالتمرير الأفقي على الجسم كله إذا كان المحتوى أوسع */
     min-height: 100vh;
     box-sizing: border-box;
 }
@@ -64,8 +64,9 @@ button:hover {
     max-width: 1300px; /* تحديد أقصى عرض */
     gap: 25px; /* زيادة المسافة بين المستطيلات الرئيسية */
     justify-content: center;
-    flex-wrap: wrap; 
+    flex-wrap: nowrap; /* منع الالتفاف للحفاظ على تخطيط السطر الواحد */
     align-items: flex-start;
+    min-width: 900px; /* تحديد عرض أدنى للحفاظ على التخطيط الثلاثي ومنع الضغط الزائد */
 }
 
 .drop-zone {
@@ -81,7 +82,7 @@ button:hover {
     min-height: 300px; /* زيادة الحد الأدنى للارتفاع */
     gap: 20px; /* زيادة المسافة بين العناصر الداخلية */
     flex-grow: 1;
-    flex-basis: calc(33.33% - 25px); /* الحفاظ على تخطيط 3 أعمدة */
+    flex-basis: 33.33%; /* الحفاظ على تخطيط 3 أعمدة بشكل صارم */
     position: relative; /* لتمكين وضع العناوين النسبية له */
     padding-top: 40px; /* زيادة padding-top لترك مساحة كافية بعد العنوان */
     transition: all 0.3s ease; /* إضافة انتقال لتحسين التفاعل */
@@ -229,7 +230,7 @@ button:hover {
     flex-direction: column; 
     justify-content: center;
     align-items: center;
-    cursor: grab;
+    /* cursor: grab;  // إزالة مؤشر الجر بالماوس */
     border-radius: 8px; 
     box-shadow: 2px 2px 6px var(--shadow-medium);
     font-weight: 700;
@@ -241,6 +242,8 @@ button:hover {
     font-size: 0.8em; 
     line-height: 1.3;
     z-index: 15; 
+    /* هذا هو السطر الأكثر أهمية لدعم اللمس! */
+    touch-action: none; /* يمنع المتصفح من معالجة حركة اللمس كتمرير */
 }
 
 .draggable-unit:hover {
@@ -282,6 +285,7 @@ button:hover {
 /* تنسيق شريط التمرير (Scrollbar) - لمسة جمالية إضافية */
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px; /* لإظهار شريط التمرير الأفقي */
 }
 
 ::-webkit-scrollbar-track {
