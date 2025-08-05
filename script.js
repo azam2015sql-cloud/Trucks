@@ -43,12 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const workshopDialog = document.getElementById('workshopDialog');
     const confirmDialog = document.getElementById('confirmDialog');
     const confirmMessage = document.getElementById('confirmMessage');
+    const actionDialog = document.getElementById('actionDialog');
     
     // عناصر الإحصائيات
     const waitingCount = document.getElementById('waiting-count');
     const workshopCount = document.getElementById('workshop-count');
     const sparePartCount = document.getElementById('spare-part-count');
     const outCount = document.getElementById('out-count');
+    
+    // عناصر البحث
+    const unitSearch = document.getElementById('unitSearch');
+    const clearSearchBtn = document.getElementById('clearSearch');
     
     // المتغيرات
     let selectedUnit = null;
@@ -137,12 +142,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 moveUnit(unit, outWorkshopGrid);
             });
         }
-        else if (Object.keys(workshopSections).includes(currentParent) {
-            moveToSparePart(unit);
+        else if (Object.keys(workshopSections).includes(currentParent) && currentParent !== 'sparePart') {
+            showActionDialog(unit);
         }
         else if (currentParent === 'out-workshop') {
             moveToWaiting(unit);
         }
+    }
+    
+    // عرض حوار الإجراءات
+    function showActionDialog(unit) {
+        actionDialog.showModal();
+        
+        document.getElementById('moveToSpare').onclick = () => {
+            moveToSparePart(unit);
+            actionDialog.close();
+        };
+        
+        document.getElementById('moveOut').onclick = () => {
+            showConfirmDialog('هل أنت متأكد من إخراج هذه الوحدة من الورشة؟', () => {
+                moveUnit(unit, outWorkshopGrid);
+            });
+            actionDialog.close();
+        };
+        
+        document.getElementById('cancelAction').onclick = () => {
+            actionDialog.close();
+            selectedUnit = null;
+        };
     }
     
     // الحصول على القسم الأب للوحدة
@@ -285,7 +312,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // إعداد وظيفة البحث
+    function setupSearch() {
+        unitSearch.addEventListener('input', () => {
+            const searchTerm = unitSearch.value.trim().toLowerCase();
+            
+            document.querySelectorAll('.draggable-unit').forEach(unit => {
+                const unitText = unit.textContent.toLowerCase();
+                unit.style.display = unitText.includes(searchTerm) ? 'flex' : 'none';
+            });
+            
+            updateAllCounts();
+        });
+        
+        clearSearchBtn.addEventListener('click', () => {
+            unitSearch.value = '';
+            document.querySelectorAll('.draggable-unit').forEach(unit => {
+                unit.style.display = 'flex';
+            });
+            updateAllCounts();
+        });
+    }
+    
     // تهيئة التطبيق
-    initializeUnits();
-    setupDropZones();
+    function initializeApp() {
+        initializeUnits();
+        setupDropZones();
+        setupSearch();
+    }
+    
+    initializeApp();
 });
