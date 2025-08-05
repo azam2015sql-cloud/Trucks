@@ -215,8 +215,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 moveUnit(selectedUnit, zone);
             }
         });
+    });// تهيئة الوحدات
+function initializeUnits() {
+    const waitingUnitsContainer = document.getElementById('waiting-units');
+    
+    // إنشاء الوحدات حسب التسلسل المطلوب
+    const unitNumbers = [
+        // 3001-3221 (221 وحدة)
+        ...Array.from({length: 221}, (_, i) => 3001 + i),
+        // 3234 (وحدة واحدة)
+        3234,
+        // 3562-3565 (4 وحدات)
+        ...Array.from({length: 4}, (_, i) => 3562 + i),
+        // 1551-1560 (10 وحدات)
+        ...Array.from({length: 10}, (_, i) => 1551 + i)
+    ];
+    
+    // إنشاء جميع الوحدات في منطقة الانتظار
+    unitNumbers.forEach(num => {
+        const unit = document.createElement('div');
+        unit.className = 'draggable-unit';
+        unit.textContent = num;
+        unit.draggable = true;
+        
+        unit.addEventListener('click', (e) => {
+            if (e.shiftKey) {
+                showConfirmDialog('هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟', () => {
+                    moveUnit(unit, outWorkshop);
+                });
+            } else {
+                showWorkshopDialog(unit);
+            }
+        });
+        
+        waitingUnitsContainer.appendChild(unit);
     });
+    
+    updateAllCounts();
+}
     
     // تهيئة التطبيق
     initializeUnits();
 });
+
