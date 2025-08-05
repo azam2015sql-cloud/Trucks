@@ -115,6 +115,12 @@ button:hover {
 #waiting-workshop {
     border-color: #f7a35c;
     background-color: #fff8f0;
+    /* التعديلات هنا لضمان 9 مربعات في الصف */
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 8px; /* مسافة بين المربعات */
+    align-content: start;
+    padding: 10px;
 }
 #waiting-workshop h2 {
     color: #f7a35c;
@@ -135,6 +141,12 @@ button:hover {
 #out-workshop {
     border-color: #ff5e62;
     background-color: #fff0f0;
+    /* التعديلات هنا لضمان 9 مربعات في الصف */
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 8px; /* مسافة بين المربعات */
+    align-content: start;
+    padding: 10px;
 }
 #out-workshop h2 {
     color: #ff5e62;
@@ -204,7 +216,7 @@ button:hover {
 
 /* المربعات القابلة للسحب (تم تصغير حجمها إلى النصف) */
 .draggable-unit {
-    width: 30px;
+    width: auto; /* تم التعديل */
     height: 30px;
     background-color: var(--primary-blue);
     color: var(--white);
@@ -284,84 +296,4 @@ button:hover {
 
 /* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
 
-@media (max-width: 992px) {
-    .main-container {
-        flex-basis: calc(50% - 25px);
-        max-width: 90%;
-    }
-
-    .drop-zone {
-        flex-basis: calc(50% - 25px);
-        min-height: 250px;
-    }
-
-    .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.2em;
-        margin-bottom: 20px;
-    }
-
-    button {
-        padding: 12px 25px;
-        font-size: 1em;
-        margin-bottom: 30px;
-    }
-
-    .main-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .drop-zone {
-        width: 100%;
-        min-height: 200px;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .drop-zone h2 {
-        font-size: 1em;
-        margin: -30px auto 10px auto;
-        padding: 3px 10px;
-        border-width: 1px;
-    }
-
-    .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 10px;
-    }
-
-    .subsection-drop-zone {
-        min-height: 120px;
-        padding-top: 55px;
-        border-width: 1px;
-        border-radius: 8px;
-        grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
-    }
-
-    .subsection-drop-zone h3 {
-        font-size: 0.9em;
-        top: 20px;
-        padding-bottom: 5px;
-    }
-
-    .draggable-unit {
-        width: 25px;
-        height: 25px;
-        font-size: 0.6em;
-        padding: 2px;
-    }
-
-    .draggable-unit input[type="text"] {
-        font-size: 0.6em;
-    }
-}
+@media (
