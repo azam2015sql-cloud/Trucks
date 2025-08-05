@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>إدارة الوحدات في الورشة</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -40,8 +40,74 @@
         </div>
 
         <div class="main-container">
-            <!-- باقي عناصر الواجهة -->
+            <div id="waiting-workshop" class="drop-zone">
+                <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
+                <div class="units-grid" id="waiting-units"></div>
+            </div>
+
+            <div class="workshop-sections">
+                <div id="cargo" class="subsection-drop-zone">
+                    <h3>Cargo <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="tipper" class="subsection-drop-zone">
+                    <h3>Tipper <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="tanker" class="subsection-drop-zone">
+                    <h3>Tanker <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="silo" class="subsection-drop-zone">
+                    <h3>Silo <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="rehb" class="subsection-drop-zone">
+                    <h3>Rehb <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="overhaul" class="subsection-drop-zone">
+                    <h3>OverHaull <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+                
+                <div id="spare-part" class="subsection-drop-zone">
+                    <h3>انتظار الإسبير <span class="count-badge">0</span></h3>
+                    <div class="units-grid"></div>
+                </div>
+            </div>
+
+            <div id="out-workshop" class="drop-zone">
+                <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
+                <div class="units-grid"></div>
+            </div>
         </div>
+
+        <dialog id="workshopDialog">
+            <h3>اختر قسم الورشة</h3>
+            <div class="dialog-options">
+                <button data-section="cargo">Cargo</button>
+                <button data-section="tipper">Tipper</button>
+                <button data-section="tanker">Tanker</button>
+                <button data-section="silo">Silo</button>
+                <button data-section="rehb">Rehb</button>
+                <button data-section="overhaul">OverHaull</button>
+            </div>
+            <button id="cancelWorkshopMove">إلغاء</button>
+        </dialog>
+
+        <dialog id="confirmDialog">
+            <h3 id="confirmMessage">هل أنت متأكد؟</h3>
+            <div class="dialog-options">
+                <button id="confirmYes">نعم</button>
+                <button id="confirmNo">لا</button>
+            </div>
+        </dialog>
 
         <dialog id="actionDialog">
             <h3 id="actionTitle">اختر الإجراء المطلوب</h3>
@@ -51,8 +117,6 @@
             </div>
             <button id="cancelAction">إلغاء</button>
         </dialog>
-
-        <!-- باقي عناصر الحوارات -->
     </div>
 
     <script src="script.js"></script>
