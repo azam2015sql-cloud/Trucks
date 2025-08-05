@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let draggedItem = null;
     let unitCount = 0;
-    
     let longPressTimer = null;
     const longPressDelay = 500;
 
@@ -52,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
             draggedItem.style.removeProperty('left');
             draggedItem.style.removeProperty('pointer-events');
             
-            // إزالة المستمعين على مستوى الشاشة
             window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('touchend', handleTouchEnd);
         }
