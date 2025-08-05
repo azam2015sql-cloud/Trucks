@@ -1,4 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // بيانات المهندسين وكلمات المرور
+    const engineers = {
+        '11742': 'سفيان',
+        '11708': 'عزام',
+        '20091': 'محمد علي',
+        '10841': 'عبدالهادي',
+        '10596': 'سامي',
+        '12252': 'جعفر',
+        '11674': 'وليد',
+        '10341': 'عادل',
+        '10156': 'محمد محجوب'
+    };
+    
+    let currentEngineer = 'غير معروف';
+    
+    // عناصر تسجيل الدخول
+    const loginDialog = document.getElementById('loginDialog');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const mainApp = document.getElementById('mainApp');
+    const currentEngineerSpan = document.getElementById('currentEngineer');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // عرض حوار تسجيل الدخول أولاً
+    loginDialog.showModal();
+    
+    // حدث تسجيل الدخول
+    loginBtn.addEventListener('click', () => {
+        const password = passwordInput.value.trim();
+        
+        if (engineers[password]) {
+            currentEngineer = engineers[password];
+            currentEngineerSpan.textContent = `المهندس: ${currentEngineer}`;
+            loginDialog.close();
+            mainApp.style.display = 'block';
+            initializeApp();
+        } else {
+            loginError.textContent = 'كلمة المرور غير صحيحة';
+        }
+    });
+    
+    // حدث تسجيل الخروج
+    logoutBtn.addEventListener('click', () => {
+        mainApp.style.display = 'none';
+        passwordInput.value = '';
+        loginError.textContent = '';
+        loginDialog.showModal();
+    });
+    
     // العناصر الرئيسية
     const waitingUnitsContainer = document.getElementById('waiting-units');
     const workshopSections = {
@@ -89,8 +139,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function createUnit(number, container) {
         const unit = document.createElement('div');
         unit.className = 'draggable-unit';
-        unit.textContent = number;
         unit.draggable = true;
+        
+        // إنشاء محتوى الوحدة
+        const unitNumber = document.createElement('div');
+        unitNumber.className = 'unit-number';
+        unitNumber.textContent = number;
+        
+        const unitTime = document.createElement('div');
+        unitTime.className = 'unit-time';
+        unitTime.textContent = getCurrentDateTime();
+        
+        const unitEngineer = document.createElement('div');
+        unitEngineer.className = 'unit-engineer';
+        unitEngineer.textContent = currentEngineer;
+        
+        unit.appendChild(unitNumber);
+        unit.appendChild(unitTime);
+        unit.appendChild(unitEngineer);
         
         // إعداد أحداث الوحدة
         setupUnitEvents(unit);
@@ -99,12 +165,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return unit;
     }
     
+    // الحصول على التاريخ والوقت الحالي
+    function getCurrentDateTime() {
+        const now = new Date();
+        const date = now.toLocaleDateString('ar-EG');
+        const time = now.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+        return `${date} ${time}`;
+    }
+    
+    // تحديث معلومات الوحدة عند نقلها
+    function updateUnitInfo(unit) {
+        const timeElement = unit.querySelector('.unit-time');
+        const engineerElement = unit.querySelector('.unit-engineer');
+        
+        if (timeElement) {
+            timeElement.textContent = getCurrentDateTime();
+        }
+        
+        if (engineerElement) {
+            engineerElement.textContent = currentEngineer;
+        }
+    }
+    
     // إعداد أحداث الوحدة
     function setupUnitEvents(unit) {
         // حدث السحب
         unit.addEventListener('dragstart', (e) => {
             selectedUnit = unit;
-            e.dataTransfer.setData('text/plain', unit.textContent);
+            e.dataTransfer.setData('text/plain', unit.querySelector('.unit-number').textContent);
         });
         
         // حدث النقر
@@ -230,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function moveUnit(unit, targetContainer) {
         if (unit && targetContainer && unit.parentElement !== targetContainer) {
             targetContainer.appendChild(unit);
+            updateUnitInfo(unit);
             updateUnitColor(unit, targetContainer);
             updateAllCounts();
         }
@@ -318,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchTerm = unitSearch.value.trim().toLowerCase();
             
             document.querySelectorAll('.draggable-unit').forEach(unit => {
-                const unitText = unit.textContent.toLowerCase();
+                const unitText = unit.querySelector('.unit-number').textContent.toLowerCase();
                 unit.style.display = unitText.includes(searchTerm) ? 'flex' : 'none';
             });
             
@@ -340,6 +429,4 @@ document.addEventListener('DOMContentLoaded', () => {
         setupDropZones();
         setupSearch();
     }
-    
-    initializeApp();
 });
