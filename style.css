@@ -36,25 +36,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-#addUnitButton {
-    background-color: var(--secondary-green);
-    color: var(--white);
-    border: none;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px var(--shadow-light);
-    margin-bottom: 30px;
-}
-
-#addUnitButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px var(--shadow-medium);
-}
-
 .main-container {
     display: flex;
     flex-wrap: wrap; /* السماح للعناصر بالانتقال إلى سطر جديد */
@@ -139,7 +120,6 @@ h1 {
     text-align: center;
     margin-bottom: 15px;
     cursor: grab;
-    touch-action: none;
     box-shadow: 0 2px 4px var(--shadow-medium);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     font-weight: 700;
@@ -157,7 +137,6 @@ h1 {
 }
 
 .unit-text-content {
-    /* تأكد من أن النص لا يتعارض مع زر الحذف */
     padding: 0 15px;
 }
 
@@ -198,7 +177,6 @@ h1 {
     margin: auto;
 }
 
-
 /* media queries للتجاوب مع الأجهزة */
 @media (max-width: 1024px) {
     .main-container {
@@ -221,11 +199,6 @@ h1 {
 @media (max-width: 768px) {
     h1 {
         font-size: 2em;
-    }
-
-    #addUnitButton {
-        padding: 12px 25px;
-        font-size: 1em;
     }
 
     .drop-zone {
