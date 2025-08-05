@@ -1,8 +1,7 @@
 /* استيراد خطوط Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
 :root {
-    /* لوحة الألوان الجديدة العصرية */
     --primary-blue: #4d7c9a;
     --secondary-green: #5eb5a6;
     --accent-orange: #f28c5a;
@@ -21,364 +20,245 @@ body {
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, var(--light-grey) 0%, #e0e6ea 100%);
+    padding: 15px;
+    background: var(--light-grey);
     color: var(--dark-grey);
-    overflow-x: hidden;
     min-height: 100vh;
     box-sizing: border-box;
+    zoom: 85%;
 }
 
 h1 {
     color: var(--dark-grey);
-    margin-bottom: 30px;
-    font-size: 2.8em;
-    font-weight: 700;
-    text-shadow: 1px 1px 3px var(--shadow-light);
+    margin: 10px 0 20px;
+    font-size: 2.2em;
+    text-align: center;
 }
 
-.controls {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.stats-container {
     width: 100%;
-    max-width: 800px;
-    margin-bottom: 20px;
-}
-
-.search-container {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-#unitSearch {
-    flex-grow: 1;
-    padding: 12px 15px;
-    border: 1px solid var(--medium-grey);
-    border-radius: 30px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 1em;
-}
-
-#clearSearch {
-    padding: 12px 20px;
-    background: var(--medium-grey);
-    color: var(--dark-grey);
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#clearSearch:hover {
-    background: var(--primary-blue);
-    color: var(--white);
+    max-width: 1200px;
+    margin-bottom: 15px;
 }
 
 .stats-bar {
     display: flex;
     justify-content: space-around;
-    width: 100%;
-    max-width: 800px;
-    margin-bottom: 20px;
-    padding: 10px;
     background-color: var(--white);
+    padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 8px var(--shadow-light);
-}
-
-button {
-    padding: 15px 35px;
-    font-size: 1.1em;
-    background: linear-gradient(45deg, var(--secondary-green) 0%, #4a9184 100%);
-    color: var(--white);
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(80, 227, 194, 0.2);
-    letter-spacing: 0.5px;
-}
-
-button:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(80, 227, 194, 0.3);
-    background: linear-gradient(45deg, #4a9184 0%, var(--secondary-green) 100%);
+    font-weight: bold;
 }
 
 .main-container {
     display: flex;
-    width: 98%;
-    max-width: 1300px;
-    gap: 25px;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    gap: 15px;
+    justify-content: space-between;
 }
 
 .drop-zone {
     border: 2px solid var(--medium-grey);
     background-color: var(--white);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 6px 18px var(--shadow-light);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    min-height: 300px;
-    gap: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px var(--shadow-light);
+    min-height: 400px;
     width: 100%;
     transition: all 0.3s ease;
-    margin-top: 20px;
-}
-
-.drop-zone:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px var(--shadow-medium);
-}
-
-.drop-zone h2 {
-    margin: -40px 0 20px 0;
-    text-align: center;
-    font-size: 1.4em;
-    font-weight: 700;
+    position: relative;
 }
 
 #waiting-workshop {
+    flex: 1;
     border-color: var(--accent-orange);
     background-color: #fff9f5;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    align-content: start;
-    padding: 10px;
-}
-#waiting-workshop h2 {
-    color: var(--accent-orange);
 }
 
 #workshop {
+    flex: 2;
     border-color: var(--primary-blue);
     background-color: #f6f9fc;
 }
-#workshop h2 {
-    color: var(--primary-blue);
-}
 
 #out-workshop {
+    flex: 1;
     border-color: var(--danger-red);
     background-color: #fcf6f6;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    align-content: start;
-    padding: 10px;
 }
-#out-workshop h2 {
-    color: var(--danger-red);
+
+.drop-zone h2 {
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.count-badge {
+    background-color: var(--dark-grey);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
 }
 
 .workshop-sections {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    width: 100%;
-    flex-grow: 1;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
 }
 
 .subsection-drop-zone {
     border: 1px solid var(--medium-grey);
     background-color: #fdfdfd;
-    border-radius: 10px;
-    min-height: 150px;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
+    border-radius: 8px;
+    min-height: 120px;
     position: relative;
-    padding-top: 65px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr));
-    gap: 8px;
-    align-content: start;
-    justify-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    box-shadow: 0 2px 8px var(--shadow-light);
-}
-
-.subsection-drop-zone:hover {
-    box-shadow: 0 4px 12px var(--shadow-medium);
-    border-color: var(--primary-blue);
+    padding-top: 40px;
+    box-shadow: 0 2px 6px var(--shadow-light);
 }
 
 .subsection-drop-zone h3 {
     margin: 0;
-    color: var(--dark-grey);
-    font-size: 1.1em;
-    font-weight: 700;
     position: absolute;
-    top: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 20px);
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
     text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
     border-bottom: 1px dashed var(--medium-grey);
-    padding-bottom: 8px;
-    z-index: 10;
-    background-color: var(--white);
-    padding-top: 5px;
-    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .draggable-unit {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: var(--primary-blue);
     color: var(--white);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    cursor: grab;
+    cursor: pointer;
     border-radius: 6px;
-    box-shadow: 2px 2px 6px var(--shadow-medium);
-    font-weight: 700;
-    user-select: none;
-    transition: all 0.2s ease;
-    word-break: break-all;
+    margin: 5px;
+    font-weight: bold;
+    font-size: 0.8em;
     text-align: center;
-    padding: 5px;
-    font-size: 1em;
-    line-height: 1.2;
-    z-index: 15;
-}
-
-.draggable-unit:hover {
-    background-color: #3A7ACF;
-    box-shadow: 3px 3px 8px var(--shadow-medium);
-    transform: translateY(-1px);
-}
-
-.draggable-unit.dragging {
-    opacity: 0.7;
-    border: 3px dashed var(--accent-orange);
-    transform: scale(1.08);
-    box-shadow: 0 5px 15px var(--shadow-medium);
+    word-break: break-all;
+    padding: 2px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
 }
 
 #waiting-workshop .draggable-unit {
     background-color: var(--accent-orange);
 }
+
 #out-workshop .draggable-unit {
     background-color: var(--danger-red);
 }
 
-/* حوار التأكيد */
-#confirmDialog {
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    padding: 25px;
-    max-width: 400px;
-    text-align: center;
+.draggable-unit:hover {
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-#confirmDialog::backdrop {
+/* حوارات */
+#workshopDialog, #confirmDialog {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+#workshopDialog::backdrop, #confirmDialog::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#workshopDialog button, #confirmDialog button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#workshopDialog button {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+#workshopDialog button:hover {
+    background-color: #3a6a8a;
+}
+
+#cancelWorkshopMove {
+    width: 100%;
+    margin-top: 10px;
+    background-color: var(--medium-grey);
 }
 
 .dialog-buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 20px;
-}
-
-.dialog-buttons button {
-    padding: 10px 25px;
-    font-size: 1em;
+    margin-top: 15px;
 }
 
 #confirmYes {
-    background: var(--danger-red);
+    background-color: var(--danger-red);
+    color: white;
 }
 
 #confirmNo {
-    background: var(--secondary-green);
+    background-color: var(--secondary-green);
+    color: white;
 }
 
-/* التجاوب */
-@media (max-width: 992px) {
-    .main-container {
-        flex-basis: calc(50% - 25px);
-        max-width: 90%;
+@media (max-width: 1000px) {
+    body {
+        zoom: 75%;
     }
-
-    .drop-zone {
-        min-height: 250px;
-    }
-
-    .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.2em;
-        margin-bottom: 20px;
-    }
-
-    button {
-        padding: 12px 25px;
-        font-size: 1em;
-    }
-
+    
     .main-container {
         flex-direction: column;
-        align-items: center;
-        gap: 40px;
-        width: 100%;
-        max-width: 400px;
     }
-
-    .drop-zone {
-        width: 100%;
-        min-height: 200px;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .drop-zone h2 {
-        font-size: 1.2em;
-        margin: 0 0 15px 0;
-    }
-
+    
     .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        zoom: 65%;
+        padding: 10px;
+    }
+    
+    .stats-bar {
+        flex-wrap: wrap;
         gap: 10px;
     }
-
-    .subsection-drop-zone {
-        min-height: 120px;
-        padding-top: 55px;
-        border-width: 1px;
-        border-radius: 8px;
-    }
-
-    .subsection-drop-zone h3 {
-        font-size: 0.9em;
-        top: 20px;
-        padding-bottom: 5px;
-    }
-
-    .draggable-unit {
-        width: 40px;
-        height: 40px;
-        font-size: 0.8em;
-        padding: 2px;
+    
+    .dialog-options {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
