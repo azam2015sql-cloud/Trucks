@@ -70,30 +70,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // تفويض الأحداث للتعامل مع النقر على زر الحذف
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            e.stopPropagation(); // منع النقر من الوصول إلى الوحدة أو المنطقة
+            const unitToDelete = e.target.closest('.draggable-unit');
+            if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
+                unitToDelete.parentElement.removeChild(unitToDelete);
+                if (selectedUnit === unitToDelete) {
+                    selectedUnit = null;
+                }
+            }
+        }
+    });
+
     // دالة إنشاء وحدة جديدة
     function createDraggableUnit(initialText = null) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
-        newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
+        
+        const unitTextSpan = document.createElement('span');
+        unitTextSpan.className = 'unit-text-content';
+        unitTextSpan.textContent = initialText || `وحدة رقم ${++unitCount}`;
         
         // إنشاء زر الحذف
         const deleteBtn = document.createElement('span');
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '×';
         
-        // حدث النقر على زر الحذف
-        deleteBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // منع النقر من تحديد الوحدة
-            if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
-                newUnit.parentElement.removeChild(newUnit);
-                // إذا كانت الوحدة المحذوفة هي المحددة حاليًا، أزل التحديد
-                if (selectedUnit === newUnit) {
-                    selectedUnit = null;
-                }
-            }
-        });
-
-        // إضافة زر الحذف إلى الوحدة
+        // إضافة المحتوى وزر الحذف إلى الوحدة
+        newUnit.appendChild(unitTextSpan);
         newUnit.appendChild(deleteBtn);
         
         // حدث النقر على الوحدة لتحديدها
@@ -106,24 +112,23 @@ document.addEventListener('DOMContentLoaded', () => {
         newUnit.addEventListener('dblclick', (e) => {
             e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
             
-            // إزالة زر الحذف مؤقتًا أثناء التعديل
-            deleteBtn.style.display = 'none';
-
-            const currentText = newUnit.textContent;
+            const currentText = unitTextSpan.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
-            inputField.value = currentText.replace('×', '').trim(); // إزالة زر الحذف من النص
+            inputField.value = currentText;
             inputField.className = 'edit-unit-input';
 
-            newUnit.textContent = '';
+            newUnit.innerHTML = ''; // مسح المحتوى الحالي
             newUnit.appendChild(inputField);
             inputField.focus();
 
             const saveChanges = () => {
-                newUnit.textContent = inputField.value.trim() || currentText;
-                // إعادة إضافة زر الحذف
+                const newText = inputField.value.trim() || currentText;
+                
+                newUnit.innerHTML = '';
+                unitTextSpan.textContent = newText;
+                newUnit.appendChild(unitTextSpan);
                 newUnit.appendChild(deleteBtn);
-                deleteBtn.style.display = 'block';
 
                 if (newUnit.contains(inputField)) {
                     newUnit.removeChild(inputField);
