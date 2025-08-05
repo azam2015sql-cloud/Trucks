@@ -3,14 +3,14 @@
 
 :root {
     /* لوحة الألوان الجديدة العصرية */
-    --primary-blue: #5b9bd5;
-    --secondary-green: #00b06b;
-    --accent-orange: #ff914d;
-    --danger-red: #ff6f69;
-    --light-grey: #f0f4f8;
-    --medium-grey: #e9ecef;
-    --dark-grey: #343a40;
-    --white: #FFFFFF;
+    --primary-blue: #4a90e2; /* أزرق سماوي */
+    --secondary-green: #50e3c2; /* أخضر نعناعي */
+    --accent-orange: #ff9f43; /* برتقالي دافئ */
+    --danger-red: #ff6b6b; /* أحمر مرجاني */
+    --light-grey: #f0f4f8; /* رمادي فاتح للخلفية */
+    --medium-grey: #e9ecef; /* رمادي متوسط للعناصر */
+    --dark-grey: #334e68; /* رمادي داكن للنصوص */
+    --white: #FFFFFF; /* أبيض */
     --shadow-light: rgba(0, 0, 0, 0.08);
     --shadow-medium: rgba(0, 0, 0, 0.15);
 }
@@ -22,7 +22,7 @@ body {
     align-items: center;
     margin: 0;
     padding: 30px 20px;
-    background: linear-gradient(135deg, #f0f4f8 0%, #e0e6ea 100%);
+    background: linear-gradient(135deg, var(--light-grey) 0%, #e0e6ea 100%);
     color: var(--dark-grey);
     overflow-x: hidden;
     min-height: 100vh;
@@ -40,22 +40,22 @@ h1 {
 button {
     padding: 15px 35px;
     font-size: 1.1em;
-    background: linear-gradient(45deg, var(--secondary-green) 0%, #008f58 100%);
+    background: linear-gradient(45deg, var(--secondary-green) 0%, #3ec2a2 100%);
     color: var(--white);
     border: none;
     border-radius: 30px;
     cursor: pointer;
     margin-bottom: 40px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(0, 176, 107, 0.2);
+    box-shadow: 0 8px 16px rgba(80, 227, 194, 0.2);
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 button:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(0, 176, 107, 0.3);
-    background: linear-gradient(45deg, #008f58 0%, var(--secondary-green) 100%);
+    box-shadow: 0 12px 20px rgba(80, 227, 194, 0.3);
+    background: linear-gradient(45deg, #3ec2a2 0%, var(--secondary-green) 100%);
 }
 
 .main-container {
@@ -113,32 +113,32 @@ button:hover {
 
 /* الألوان الجديدة الجذابة للمستطيلات */
 #waiting-workshop {
-    border-color: var(--accent-orange);
-    background-color: #fffaf0;
+    border-color: #f7a35c;
+    background-color: #fff8f0;
 }
 #waiting-workshop h2 {
-    color: var(--accent-orange);
-    border-color: var(--accent-orange);
-    background-color: #fffaf0;
+    color: #f7a35c;
+    border-color: #f7a35c;
+    background-color: #fff8f0;
 }
 
 #workshop {
-    border-color: var(--primary-blue);
+    border-color: #6a95f4;
     background-color: #f0f7ff;
 }
 #workshop h2 {
-    color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    color: #6a95f4;
+    border-color: #6a95f4;
     background-color: #f0f7ff;
 }
 
 #out-workshop {
-    border-color: var(--danger-red);
+    border-color: #ff5e62;
     background-color: #fff0f0;
 }
 #out-workshop h2 {
-    color: var(--danger-red);
-    border-color: var(--danger-red);
+    color: #ff5e62;
+    border-color: #ff5e62;
     background-color: #fff0f0;
 }
 
@@ -202,7 +202,7 @@ button:hover {
     transform: scale(1.01);
 }
 
-/* المربعات القابلة للسحب (تم تصغير حجمها) */
+/* المربعات القابلة للسحب (تم تصغير حجمها إلى النصف) */
 .draggable-unit {
     width: 30px;
     height: 30px;
@@ -227,7 +227,7 @@ button:hover {
 }
 
 .draggable-unit:hover {
-    background-color: #4a90e2;
+    background-color: #3A7ACF;
     box-shadow: 3px 3px 8px var(--shadow-medium);
     transform: translateY(-1px);
 }
@@ -279,7 +279,89 @@ button:hover {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #4a90e2;
+    background: #3A7ACF;
 }
 
-/*
+/* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
+
+@media (max-width: 992px) {
+    .main-container {
+        flex-basis: calc(50% - 25px);
+        max-width: 90%;
+    }
+
+    .drop-zone {
+        flex-basis: calc(50% - 25px);
+        min-height: 250px;
+    }
+
+    .workshop-sections {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .drop-zone {
+        width: 100%;
+        min-height: 200px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .drop-zone h2 {
+        font-size: 1em;
+        margin: -30px auto 10px auto;
+        padding: 3px 10px;
+        border-width: 1px;
+    }
+
+    .workshop-sections {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
+    }
+
+    .subsection-drop-zone {
+        min-height: 120px;
+        padding-top: 55px;
+        border-width: 1px;
+        border-radius: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
+    }
+
+    .subsection-drop-zone h3 {
+        font-size: 0.9em;
+        top: 20px;
+        padding-bottom: 5px;
+    }
+
+    .draggable-unit {
+        width: 25px;
+        height: 25px;
+        font-size: 0.6em;
+        padding: 2px;
+    }
+
+    .draggable-unit input[type="text"] {
+        font-size: 0.6em;
+    }
+}
