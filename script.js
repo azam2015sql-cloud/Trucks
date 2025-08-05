@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedItem = null;
     let unitCount = 0;
     
+    // متغيرات لمنطق النقر المزدوج باللمس
+    let lastTapTime = 0;
+    const doubleTapDelay = 300; // 300 مللي ثانية بين النقرتين
+
     // دالة للتحقق مما إذا كان الجهاز يدعم اللمس
     function isTouchDevice() {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
@@ -78,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // منطق اللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
             if (isTouchDevice()) {
                 element.addEventListener('touchstart', (e) => {
+                    // إذا كان هناك عنصر "ممسوك"، فإن لمس المنطقة سيؤدي إلى إفلاته
                     if (draggedItem) {
                         e.preventDefault();
                         dropItem(element);
@@ -109,23 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
         // منطق السحب باللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
         if (isTouchDevice()) {
             newUnit.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                e.stopPropagation(); // منع انتقال الحدث إلى أي عنصر آخر
 
-                // إذا كان هناك عنصر آخر مسحوب، قم بإفلاته
-                if (draggedItem && draggedItem !== newUnit) {
-                    draggedItem.classList.remove('dragging');
-                    draggedItem = null;
+                const currentTime = new Date().getTime();
+                const tapDifference = currentTime - lastTapTime;
+
+                // إذا كانت نقرتين متتاليتين بسرعة
+                if (tapDifference < doubleTapDelay && tapDifference > 0) {
+                    e.preventDefault(); // منع سلوك اللمس الافتراضي للتمرير
+                    
+                    if (draggedItem) {
+                        // إذا كان هناك عنصر آخر مسحوب بالفعل، قم بإفلاته
+                        draggedItem.classList.remove('dragging');
+                    }
+
+                    // "التقاط" الوحدة الجديدة
+                    draggedItem = newUnit;
+                    draggedItem.classList.add('dragging');
                 }
-
-                // "التقاط" الوحدة الجديدة
-                draggedItem = newUnit;
-                draggedItem.classList.add('dragging');
+                lastTapTime = currentTime;
             });
         }
         
-        // دبل كليك لتعديل النص
-        newUnit.addEventListener('dblclick', () => {
+        // دبل كليك لتعديل النص (سواء بالماوس أو باللمس)
+        newUnit.addEventListener('dblclick', (e) => {
+            // منطق تعديل النص
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
