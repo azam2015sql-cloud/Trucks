@@ -13,41 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     let currentEngineer = 'غير معروف';
+    let unitsData = JSON.parse(localStorage.getItem('workshopUnits')) || {};
     
     // عناصر تسجيل الدخول
-    const loginDialog = document.getElementById('loginDialog');
+    const loginScreen = document.getElementById('loginScreen');
     const passwordInput = document.getElementById('passwordInput');
     const loginBtn = document.getElementById('loginBtn');
     const loginError = document.getElementById('loginError');
     const mainApp = document.getElementById('mainApp');
     const currentEngineerSpan = document.getElementById('currentEngineer');
     const logoutBtn = document.getElementById('logoutBtn');
-    
-    // عرض حوار تسجيل الدخول أولاً
-    loginDialog.showModal();
-    
-    // حدث تسجيل الدخول
-    loginBtn.addEventListener('click', () => {
-        const password = passwordInput.value.trim();
-        
-        if (engineers[password]) {
-            currentEngineer = engineers[password];
-            currentEngineerSpan.textContent = `المهندس: ${currentEngineer}`;
-            loginDialog.close();
-            mainApp.style.display = 'block';
-            initializeApp();
-        } else {
-            loginError.textContent = 'كلمة المرور غير صحيحة';
-        }
-    });
-    
-    // حدث تسجيل الخروج
-    logoutBtn.addEventListener('click', () => {
-        mainApp.style.display = 'none';
-        passwordInput.value = '';
-        loginError.textContent = '';
-        loginDialog.showModal();
-    });
     
     // العناصر الرئيسية
     const waitingUnitsContainer = document.getElementById('waiting-units');
@@ -108,16 +83,59 @@ document.addEventListener('DOMContentLoaded', () => {
     // المتغيرات
     let selectedUnit = null;
     
+    // عرض شاشة تسجيل الدخول أولاً
+    loginScreen.style.display = 'flex';
+    
+    // حدث تسجيل الدخول
+    loginBtn.addEventListener('click', () => {
+        const password = passwordInput.value.trim();
+        
+        if (engineers[password]) {
+            currentEngineer = engineers[password];
+            currentEngineerSpan.textContent = `المهندس: ${currentEngineer}`;
+            loginScreen.style.display = 'none';
+            mainApp.style.display = 'block';
+            
+            // تحميل البيانات المحفوظة أو تهيئة جديدة
+            if (Object.keys(unitsData).length === 0) {
+                initializeUnits();
+            } else {
+                loadUnitsFromStorage();
+            }
+        } else {
+            loginError.textContent = 'كلمة المرور غير صحيحة';
+        }
+    });
+    
+    // حدث تسجيل الخروج
+    logoutBtn.addEventListener('click', () => {
+        mainApp.style.display = 'none';
+        passwordInput.value = '';
+        loginError.textContent = '';
+        loginScreen.style.display = 'flex';
+    });
+    
     // تهيئة الوحدات
     function initializeUnits() {
+        // مسح أي بيانات قديمة
+        unitsData = {};
+        
         // إنشاء الوحدات حسب التسلسل المطلوب
         const unitNumbers = generateUnitNumbers();
         
         // إنشاء جميع الوحدات في منطقة الانتظار
         unitNumbers.forEach(num => {
             createUnit(num, waitingUnitsContainer);
+            
+            // حفظ البيانات الأولية
+            unitsData[num] = {
+                section: 'waiting-workshop',
+                lastMoveTime: getCurrentDateTime(),
+                engineer: currentEngineer
+            };
         });
         
+        localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
         updateAllCounts();
     }
     
@@ -133,6 +151,66 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1551-1560 (10 وحدات)
             ...Array.from({length: 10}, (_, i) => 1551 + i)
         ];
+    }
+    
+    // دالة لتحميل البيانات من localStorage
+    function loadUnitsFromStorage() {
+        // مسح جميع الوحدات الحالية
+        document.querySelectorAll('.units-grid').forEach(grid => {
+            grid.innerHTML = '';
+        });
+        
+        // إعادة إنشاء الوحدات من البيانات المحفوظة
+        Object.keys(unitsData).forEach(unitNumber => {
+            const unitInfo = unitsData[unitNumber];
+            const targetContainer = getContainerById(unitInfo.section);
+            
+            if (targetContainer) {
+                createUnitWithData(unitNumber, unitInfo, targetContainer);
+            }
+        });
+        
+        updateAllCounts();
+    }
+    
+    // دالة مساعدة للحصول على العنصر الهدف
+    function getContainerById(sectionId) {
+        if (sectionId === 'waiting-workshop') return waitingUnitsContainer;
+        if (sectionId === 'out-workshop') return outWorkshopGrid;
+        if (workshopSections[sectionId]) return workshopSections[sectionId].grid;
+        return null;
+    }
+    
+    // إنشاء وحدة مع البيانات المحفوظة
+    function createUnitWithData(number, unitInfo, container) {
+        const unit = document.createElement('div');
+        unit.className = 'draggable-unit';
+        unit.draggable = true;
+        
+        const unitNumber = document.createElement('div');
+        unitNumber.className = 'unit-number';
+        unitNumber.textContent = number;
+        
+        const unitTime = document.createElement('div');
+        unitTime.className = 'unit-time';
+        unitTime.textContent = unitInfo.lastMoveTime;
+        
+        const unitEngineer = document.createElement('div');
+        unitEngineer.className = 'unit-engineer';
+        unitEngineer.textContent = unitInfo.engineer;
+        
+        unit.appendChild(unitNumber);
+        unit.appendChild(unitTime);
+        unit.appendChild(unitEngineer);
+        
+        setupUnitEvents(unit);
+        container.appendChild(unit);
+        
+        // تحديث لون الوحدة حسب القسم
+        const parentElement = container.closest('.drop-zone, .subsection-drop-zone');
+        if (parentElement) {
+            updateUnitColor(unit, container);
+        }
     }
     
     // إنشاء وحدة جديدة
@@ -317,10 +395,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // نقل الوحدة
     function moveUnit(unit, targetContainer) {
         if (unit && targetContainer && unit.parentElement !== targetContainer) {
+            const unitNumber = unit.querySelector('.unit-number').textContent;
+            const parentElement = targetContainer.closest('.drop-zone, .subsection-drop-zone');
+            
             targetContainer.appendChild(unit);
             updateUnitInfo(unit);
             updateUnitColor(unit, targetContainer);
             updateAllCounts();
+            
+            // حفظ البيانات في localStorage
+            unitsData[unitNumber] = {
+                section: parentElement.id,
+                lastMoveTime: getCurrentDateTime(),
+                engineer: currentEngineer
+            };
+            
+            localStorage.setItem('workshopUnits', JSON.stringify(unitsData));
         }
     }
     
@@ -425,8 +515,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // تهيئة التطبيق
     function initializeApp() {
-        initializeUnits();
         setupDropZones();
         setupSearch();
+    }
+    
+    // تهيئة التطبيق عند تحميل الصفحة
+    if (mainApp.style.display === 'block') {
+        initializeApp();
     }
 });
