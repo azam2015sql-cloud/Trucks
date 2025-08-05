@@ -1,18 +1,53 @@
-/* التنسيقات السابقة مع التعديلات التالية */
+:root {
+    --primary-blue: #2c3e50;
+    --secondary-green: #27ae60;
+    --accent-orange: #e67e22;
+    --danger-red: #e74c3c;
+    --white: #ffffff;
+    --light-grey: #ecf0f1;
+    --medium-grey: #bdc3c7;
+    --dark-grey: #7f8c8d;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background-color: var(--light-grey);
+    min-height: 100vh;
+    padding: 10px;
+    overflow-x: hidden;
+}
 
 .app-container {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 15px;
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px var(--shadow-light);
 }
 
 .main-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 25px;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.main-header h1 {
+    color: var(--primary-blue);
+    font-size: 1.8rem;
+    text-align: center;
 }
 
 .search-container {
@@ -22,25 +57,24 @@
     max-width: 500px;
 }
 
-#unitSearch {
-    flex-grow: 1;
-    padding: 12px 20px;
-    border: 1px solid var(--medium-grey);
+#unitSearch, #clearSearch {
+    padding: 12px 15px;
+    font-size: 1rem;
     border-radius: 30px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 1em;
+    border: 1px solid var(--medium-grey);
+    transition: all 0.3s ease;
+}
+
+#unitSearch {
+    flex: 1;
     background-color: var(--white);
-    box-shadow: 0 2px 5px var(--shadow-light);
 }
 
 #clearSearch {
-    padding: 12px 20px;
     background-color: var(--medium-grey);
     color: var(--dark-grey);
-    border: none;
-    border-radius: 30px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 #clearSearch:hover {
@@ -50,26 +84,27 @@
 
 .section-stats-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    width: 100%;
+    gap: 15px;
     margin-bottom: 20px;
-    gap: 20px;
 }
 
 .left-stats, .right-stats {
+    flex: 1;
+    min-width: 250px;
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
     background-color: var(--white);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 2px 8px var(--shadow-light);
-    flex-wrap: wrap;
 }
 
 .left-stats div, .right-stats div {
     display: flex;
-    gap: 8px;
-    font-weight: 600;
+    gap: 5px;
 }
 
 .left-stats span, .right-stats span {
@@ -77,25 +112,121 @@
     color: var(--primary-blue);
 }
 
-/* تحسين حوار الإجراءات */
-#actionDialog {
+.stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.stats-bar div {
+    display: flex;
+    gap: 5px;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.drop-zone, .subsection-drop-zone {
+    border-radius: 10px;
+    padding: 15px;
+    background-color: var(--light-grey);
+    box-shadow: 0 2px 5px var(--shadow-light);
+}
+
+.drop-zone h2, .subsection-drop-zone h3 {
+    margin-bottom: 10px;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.count-badge {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.units-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    min-height: 60px;
+    border-radius: 8px;
+    background-color: var(--white);
+}
+
+.draggable-unit {
+    background-color: var(--accent-orange);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+    user-select: none;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    height: 50px;
+}
+
+.draggable-unit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-dark);
+}
+
+.drag-over {
+    background-color: rgba(44, 62, 80, 0.1);
+    border: 2px dashed var(--primary-blue);
+}
+
+/* تنسيقات الحوارات */
+dialog {
     border: none;
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
     max-width: 400px;
     width: 90%;
+    margin: auto;
 }
 
-#actionDialog::backdrop {
+dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-#actionDialog .dialog-options {
+dialog h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--primary-blue);
+}
+
+.dialog-options {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin: 20px 0;
+}
+
+dialog button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 #moveToSpare {
@@ -108,9 +239,56 @@
     color: white;
 }
 
-#cancelAction {
+#cancelAction, #cancelWorkshopMove, #confirmNo {
     width: 100%;
     margin-top: 15px;
     background-color: var(--medium-grey);
     color: var(--dark-grey);
+}
+
+/* تأثيرات اللمس للأجهزة المحمولة */
+@media (hover: none) {
+    .draggable-unit:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* التجاوب مع أحجام الشاشات المختلفة */
+@media (max-width: 768px) {
+    .main-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .units-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+    
+    .left-stats, .right-stats {
+        min-width: 100%;
+    }
+    
+    .stats-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+    
+    .units-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+    
+    .draggable-unit {
+        height: 45px;
+        font-size: 0.9em;
+    }
+    
+    dialog {
+        padding: 20px 15px;
+    }
 }
