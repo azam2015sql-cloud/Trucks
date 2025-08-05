@@ -8,17 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- حوار تسجيل الدخول -->
-    <dialog id="loginDialog" class="login-dialog">
-        <h3>تسجيل الدخول</h3>
-        <div class="dialog-content">
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h2>تسجيل الدخول</h2>
             <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
             <div id="loginError" class="error-message"></div>
-        </div>
-        <div class="dialog-options">
             <button id="loginBtn">دخول</button>
         </div>
-    </dialog>
+    </div>
 
     <div class="app-container" id="mainApp" style="display: none;">
         <header class="main-header">
@@ -145,3 +142,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
