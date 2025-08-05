@@ -8,7 +8,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>إدارة الوحدات في الورشة</h1>
+    <header class="main-header">
+        <div class="section-stats left-stats">
+            <div>Cargo: <span id="cargo-stat">0</span></div>
+            <div>Tipper: <span id="tipper-stat">0</span></div>
+            <div>Tanker: <span id="tanker-stat">0</span></div>
+        </div>
+        
+        <h1>إدارة الوحدات في الورشة</h1>
+        
+        <div class="section-stats right-stats">
+            <div>Silo: <span id="silo-stat">0</span></div>
+            <div>Rehb: <span id="rehb-stat">0</span></div>
+            <div>OverHaull: <span id="overhaul-stat">0</span></div>
+        </div>
+    </header>
 
     <div class="stats-container">
         <div class="stats-bar">
@@ -65,6 +79,27 @@
         </div>
     </div>
 
-    <!-- باقي عناصر الـ dialog -->
+    <dialog id="workshopDialog">
+        <h3>اختر قسم الورشة:</h3>
+        <div class="dialog-options">
+            <button data-section="cargo">Cargo</button>
+            <button data-section="tipper">Tipper</button>
+            <button data-section="tanker">Tanker</button>
+            <button data-section="silo">Silo</button>
+            <button data-section="rehb">Rehb</button>
+            <button data-section="overhaul">OverHaull</button>
+        </div>
+        <button id="cancelWorkshopMove">إلغاء</button>
+    </dialog>
+
+    <dialog id="confirmDialog">
+        <p id="confirmMessage">هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟</p>
+        <div class="dialog-buttons">
+            <button id="confirmYes">نعم</button>
+            <button id="confirmNo">لا</button>
+        </div>
+    </dialog>
+
+    <script src="script.js"></script>
 </body>
 </html>
