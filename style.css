@@ -93,10 +93,12 @@ button:hover {
 }
 
 .drop-zone h2 {
-    margin: -35px auto 10px auto;
-    color: var(--primary-blue);
-    font-size: 1.2em;
-    font-weight: 700;
+    /* تم التعديل: إزالة الهامش السالب وتحسين التوسيط */
+    margin: 0 auto;
+    position: absolute; /* استخدام التموضع المطلق لتحكم أفضل */
+    top: -20px; /* ضبط الموضع ليكون في الجزء العلوي */
+    left: 50%;
+    transform: translateX(-50%);
     width: fit-content;
     max-width: calc(100% - 40px);
     text-align: center;
@@ -115,4 +117,141 @@ button:hover {
 #waiting-workshop {
     border-color: var(--accent-orange);
     background-color: #fff9f5;
-    /* تم التعديل ليتناسب مع حجم المربع
+    /* تم التعديل ليتناسب مع حجم المربع الأكبر */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+    align-content: start;
+    padding: 10px;
+}
+#waiting-workshop h2 {
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    background-color: #fff9f5;
+}
+
+#workshop {
+    border-color: var(--primary-blue);
+    background-color: #f6f9fc;
+}
+#workshop h2 {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    background-color: #f6f9fc;
+}
+
+#out-workshop {
+    border-color: var(--danger-red);
+    background-color: #fcf6f6;
+    /* تم التعديل ليتناسب مع حجم المربع الأكبر */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+    align-content: start;
+    padding: 10px;
+}
+#out-workshop h2 {
+    color: var(--danger-red);
+    border-color: var(--danger-red);
+    background-color: #fcf6f6;
+}
+
+.workshop-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.subsection-drop-zone {
+    border: 1px solid var(--medium-grey);
+    background-color: #fdfdfd;
+    border-radius: 10px;
+    min-height: 150px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-top: 65px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+    align-content: start;
+    justify-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.subsection-drop-zone:hover {
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    border-color: var(--primary-blue);
+}
+
+.subsection-drop-zone h3 {
+    margin: 0;
+    color: var(--dark-grey);
+    font-size: 1.1em;
+    font-weight: 700;
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 20px);
+    text-align: center;
+    border-bottom: 1px dashed var(--medium-grey);
+    padding-bottom: 8px;
+    z-index: 10;
+    background-color: var(--white);
+    padding-top: 5px;
+    border-radius: 8px 8px 0 0;
+}
+
+/* تأثير السحب والإفلات */
+.drop-zone.drag-over, .subsection-drop-zone.drag-over {
+    background-color: #D6E9F8;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.7);
+    transform: scale(1.01);
+}
+
+/* المربعات القابلة للسحب (تم إعادة الحجم إلى الحجم الأصلي) */
+.draggable-unit {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    border-radius: 6px;
+    box-shadow: 2px 2px 6px var(--shadow-medium);
+    font-weight: 700;
+    user-select: none;
+    transition: all 0.2s ease;
+    word-break: break-all;
+    text-align: center;
+    padding: 5px;
+    font-size: 1em;
+    line-height: 1.2;
+    z-index: 15;
+}
+
+.draggable-unit:hover {
+    background-color: #3A7ACF;
+    box-shadow: 3px 3px 8px var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+.draggable-unit.dragging {
+    opacity: 0.7;
+    border: 3px dashed var(--accent-orange);
+    transform: scale(1.08);
+    box-shadow: 0 5px 15px var(--shadow-medium);
+}
+
+.draggable-unit input[type="text"] {
+    width: calc(100% - 4px
