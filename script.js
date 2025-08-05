@@ -86,22 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
         unitTextSpan.className = 'unit-text-content';
         unitTextSpan.textContent = initialText;
         
-        // إنشاء زر الحذف
         const deleteBtn = document.createElement('span');
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '×';
         
-        // إضافة المحتوى وزر الحذف إلى الوحدة
         newUnit.appendChild(unitTextSpan);
         newUnit.appendChild(deleteBtn);
         
-        // حدث النقر على الوحدة لتحديدها
         newUnit.addEventListener('click', (e) => {
             e.stopPropagation();
             selectUnit(newUnit);
         });
 
-        // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', (e) => {
             e.stopPropagation();
             
@@ -145,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // إضافة المربعات الأولية
     const totalInitialUnits = 235;
     let specialNumbersForLastBlock = [1551, 1552, 1553, 1554, 1555, 1556, 1557, 1558, 1560];
-    let specialBlockIndex = 0;
 
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
@@ -157,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i > 221 && i < 226) {
             unitText = `${3562 + (i - 222)}`;
         } else {
-            unitText = `${specialNumbersForLastBlock[specialBlockIndex]}`;
-            specialBlockIndex++;
+            const lastNumIndex = i - 226;
+            unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
         }
         createDraggableUnit(unitText);
     }
