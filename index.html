@@ -5,100 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <title>إدارة الوحدات في الورشة</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="main-header">
-        <div class="section-stats left-stats">
-            <div>Cargo: <span id="cargo-stat">0</span></div>
-            <div>Tipper: <span id="tipper-stat">0</span></div>
-            <div>Tanker: <span id="tanker-stat">0</span></div>
-        </div>
-        
-        <h1>إدارة الوحدات في الورشة</h1>
-        
-        <div class="section-stats right-stats">
-            <div>Silo: <span id="silo-stat">0</span></div>
-            <div>Rehb: <span id="rehb-stat">0</span></div>
-            <div>OverHaull: <span id="overhaul-stat">0</span></div>
-        </div>
-    </header>
+    <div class="app-container">
+        <header class="main-header">
+            <h1>إدارة الوحدات في الورشة</h1>
+            
+            <div class="search-container">
+                <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
+                <button id="clearSearch">مسح البحث</button>
+            </div>
+        </header>
 
-    <div class="stats-container">
+        <div class="section-stats-container">
+            <div class="left-stats">
+                <div>Cargo: <span id="cargo-stat">0</span></div>
+                <div>Tipper: <span id="tipper-stat">0</span></div>
+                <div>Tanker: <span id="tanker-stat">0</span></div>
+            </div>
+            
+            <div class="right-stats">
+                <div>Silo: <span id="silo-stat">0</span></div>
+                <div>Rehb: <span id="rehb-stat">0</span></div>
+                <div>OverHaull: <span id="overhaul-stat">0</span></div>
+            </div>
+        </div>
+
         <div class="stats-bar">
             <div>الانتظار: <span id="waiting-count">236</span></div>
             <div>الورشة: <span id="workshop-count">0</span></div>
             <div>انتظار الإسبير: <span id="spare-part-count">0</span></div>
             <div>خارج الورشة: <span id="out-count">0</span></div>
         </div>
-    </div>
 
-    <div class="main-container">
-        <div id="waiting-workshop" class="drop-zone">
-            <h2>منطقة انتظار <span class="count-badge">236</span></h2>
-            <div class="units-grid" id="waiting-units"></div>
+        <div class="main-container">
+            <!-- باقي عناصر الواجهة -->
         </div>
 
-        <div id="workshop" class="drop-zone">
-            <h2>الورشة الرئيسية <span class="count-badge">0</span></h2>
-            <div class="workshop-sections">
-                <div id="cargo" class="subsection-drop-zone">
-                    <h3>Cargo <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="tipper" class="subsection-drop-zone">
-                    <h3>Tipper <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="tanker" class="subsection-drop-zone">
-                    <h3>Tanker <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="silo" class="subsection-drop-zone">
-                    <h3>Silo <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="rehb" class="subsection-drop-zone">
-                    <h3>Rehb <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="overhaul" class="subsection-drop-zone">
-                    <h3>OverHaull <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
-                <div id="spare-part" class="subsection-drop-zone">
-                    <h3>Spare Part <span class="count-badge">0</span></h3>
-                    <div class="units-grid"></div>
-                </div>
+        <dialog id="actionDialog">
+            <h3 id="actionTitle">اختر الإجراء المطلوب</h3>
+            <div class="dialog-options">
+                <button id="moveToSpare">نقل إلى انتظار الإسبير</button>
+                <button id="moveOut">إخراج من الورشة</button>
             </div>
-        </div>
+            <button id="cancelAction">إلغاء</button>
+        </dialog>
 
-        <div id="out-workshop" class="drop-zone">
-            <h2>خارج الورشة <span class="count-badge">0</span></h2>
-            <div class="units-grid"></div>
-        </div>
+        <!-- باقي عناصر الحوارات -->
     </div>
-
-    <dialog id="workshopDialog">
-        <h3>اختر قسم الورشة:</h3>
-        <div class="dialog-options">
-            <button data-section="cargo">Cargo</button>
-            <button data-section="tipper">Tipper</button>
-            <button data-section="tanker">Tanker</button>
-            <button data-section="silo">Silo</button>
-            <button data-section="rehb">Rehb</button>
-            <button data-section="overhaul">OverHaull</button>
-        </div>
-        <button id="cancelWorkshopMove">إلغاء</button>
-    </dialog>
-
-    <dialog id="confirmDialog">
-        <p id="confirmMessage">هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟</p>
-        <div class="dialog-buttons">
-            <button id="confirmYes">نعم</button>
-            <button id="confirmNo">لا</button>
-        </div>
-    </dialog>
 
     <script src="script.js"></script>
 </body>
