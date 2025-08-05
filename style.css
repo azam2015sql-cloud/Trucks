@@ -93,10 +93,9 @@ button:hover {
 }
 
 .drop-zone h2 {
-    /* تم التعديل: إزالة الهامش السالب وتحسين التوسيط */
     margin: 0 auto;
-    position: absolute; /* استخدام التموضع المطلق لتحكم أفضل */
-    top: -20px; /* ضبط الموضع ليكون في الجزء العلوي */
+    position: absolute;
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     width: fit-content;
@@ -117,9 +116,9 @@ button:hover {
 #waiting-workshop {
     border-color: var(--accent-orange);
     background-color: #fff9f5;
-    /* تم التعديل ليتناسب مع حجم المربع الأكبر */
+    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     align-content: start;
     padding: 10px;
@@ -143,9 +142,9 @@ button:hover {
 #out-workshop {
     border-color: var(--danger-red);
     background-color: #fcf6f6;
-    /* تم التعديل ليتناسب مع حجم المربع الأكبر */
+    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     align-content: start;
     padding: 10px;
@@ -173,8 +172,9 @@ button:hover {
     transition: all 0.2s ease;
     position: relative;
     padding-top: 65px;
+    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     align-content: start;
     justify-items: center;
@@ -254,4 +254,129 @@ button:hover {
 }
 
 .draggable-unit input[type="text"] {
-    width: calc(100% - 4px
+    width: calc(100% - 4px);
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    font-weight: 700;
+    text-align: center;
+    padding: 2px 2px;
+    margin-top: 2px;
+    font-size: 0.8em;
+    outline: none;
+    border-radius: 2px;
+    caret-color: var(--white);
+}
+
+/* ألوان خاصة للمربعات عند الانتقال لمناطق معينة */
+#waiting-workshop .draggable-unit {
+    background-color: var(--accent-orange);
+}
+#out-workshop .draggable-unit {
+    background-color: var(--danger-red);
+}
+
+/* تنسيق شريط التمرير (Scrollbar) - لمسة جمالية إضافية */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-grey);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3A7ACF;
+}
+
+/* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
+
+@media (max-width: 992px) {
+    .main-container {
+        flex-basis: calc(50% - 25px);
+        max-width: 90%;
+    }
+
+    .drop-zone {
+        flex-basis: calc(50% - 25px);
+        min-height: 250px;
+    }
+
+    .workshop-sections {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .drop-zone {
+        width: 100%;
+        min-height: 200px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .drop-zone h2 {
+        font-size: 1em;
+        margin: -30px auto 10px auto;
+        padding: 3px 10px;
+        border-width: 1px;
+    }
+
+    .workshop-sections {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
+    }
+
+    .subsection-drop-zone {
+        min-height: 120px;
+        padding-top: 55px;
+        border-width: 1px;
+        border-radius: 8px;
+        /* تم التعديل لعرض 3 مربعات في كل صف */
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .subsection-drop-zone h3 {
+        font-size: 0.9em;
+        top: 20px;
+        padding-bottom: 5px;
+    }
+
+    .draggable-unit {
+        width: 40px;
+        height: 40px;
+        font-size: 0.8em;
+        padding: 2px;
+    }
+
+    .draggable-unit input[type="text"] {
+        font-size: 0.7em;
+    }
+}
