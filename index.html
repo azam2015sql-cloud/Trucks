@@ -11,7 +11,57 @@
     <div class="app-container">
         <header class="main-header">
             <h1>إدارة الوحدات في الورشة</h1>
-            
+            <div class="main-container">
+    <!-- قسم الانتظار -->
+    <div id="waiting-workshop" class="drop-zone">
+        <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
+        <div class="units-grid" id="waiting-units"></div>
+    </div>
+
+    <!-- أقسام الورشة -->
+    <div class="workshop-sections">
+        <div id="cargo" class="subsection-drop-zone">
+            <h3>Cargo <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="tipper" class="subsection-drop-zone">
+            <h3>Tipper <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="tanker" class="subsection-drop-zone">
+            <h3>Tanker <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="silo" class="subsection-drop-zone">
+            <h3>Silo <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="rehb" class="subsection-drop-zone">
+            <h3>Rehb <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="overhaul" class="subsection-drop-zone">
+            <h3>OverHaull <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+        
+        <div id="spare-part" class="subsection-drop-zone">
+            <h3>انتظار الإسبير <span class="count-badge">0</span></h3>
+            <div class="units-grid"></div>
+        </div>
+    </div>
+
+    <!-- قسم خارج الورشة -->
+    <div id="out-workshop" class="drop-zone">
+        <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
+        <div class="units-grid"></div>
+    </div>
+</div>
             <div class="search-container">
                 <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
                 <button id="clearSearch">مسح البحث</button>
@@ -122,3 +172,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
