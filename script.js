@@ -144,8 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lastNumIndex < specialNumbersForLastBlock.length) {
                 unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
             } else {
-                // التعامل مع المربع الأخير في حالة وجود اختلاف في الأعداد
-                unitText = `وحدة إضافية ${unitCount + 1}`;
+                unitText = `وحدة رقم ${unitCount + 1}`;
                 unitCount++;
             }
         }
