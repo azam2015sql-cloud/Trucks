@@ -6,7 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
 
     let draggedItem = null;
-    let unitCount = 0; // سيتم استخدام هذا الآن لترقيم الوحدات التي يضيفها المستخدم
+    let unitCount = 0;
+    
+    // متغير لتتبع آخر نقرة مزدوجة
+    let lastTapTime = 0;
+    const doubleTapDelay = 300; // 300 مللي ثانية بين النقرتين
 
     // دالة لفرز الوحدات أبجديًا
     function sortUnitsAlphabetically(container) {
@@ -27,93 +31,76 @@ document.addEventListener('DOMContentLoaded', () => {
             unit.style.backgroundColor = 'var(--danger-red)';
         } else if (dropZoneElement.id === 'waiting-workshop') {
             unit.style.backgroundColor = 'var(--accent-orange)';
-        } else { // أي منطقة ورشة عمل فرعية أو الورشة الرئيسية نفسها
+        } else {
             unit.style.backgroundColor = 'var(--primary-blue)';
         }
     }
 
-    // تهيئة مناطق الإسقاط
+    // دالة لمعالجة إفلات الوحدة
+    function dropItem(targetDropZone) {
+        if (draggedItem && draggedItem.parentElement !== targetDropZone) {
+            if (draggedItem.parentElement) {
+                draggedItem.parentElement.removeChild(draggedItem);
+            }
+            
+            targetDropZone.appendChild(draggedItem);
+            updateUnitColor(draggedItem, targetDropZone);
+            sortUnitsAlphabetically(targetDropZone);
+
+            // إزالة تأثير السحب وتفريغ المتغير
+            draggedItem.classList.remove('dragging');
+            draggedItem = null;
+        }
+    }
+
+    // تهيئة مناطق الإسقاط (للمستخدم العادي بالنقر مرة واحدة)
     function setupDropZone(element) {
+        // أحداث الماوس القديمة
         element.addEventListener('dragover', (e) => {
             e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
             element.classList.add('drag-over');
         });
-
         element.addEventListener('dragleave', () => {
             element.classList.remove('drag-over');
         });
-
         element.addEventListener('drop', (e) => {
             e.preventDefault();
             element.classList.remove('drag-over');
-
             if (draggedItem && draggedItem.parentElement !== element) {
-                if (draggedItem.parentElement) {
-                    draggedItem.parentElement.removeChild(draggedItem);
-                }
-                
-                element.appendChild(draggedItem);
-                updateUnitColor(draggedItem, element);
-                sortUnitsAlphabetically(element);
+                dropItem(element);
+            }
+        });
+
+        // حدث اللمس لإفلات الوحدة
+        element.addEventListener('touchstart', (e) => {
+            if (draggedItem) {
+                e.preventDefault(); // منع سلوك اللمس الافتراضي
+                dropItem(element);
             }
         });
     }
+    
+    // قائمة بجميع مناطق الإسقاط الصالحة
+    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
 
     // تطبيق تهيئة مناطق الإسقاط على جميع المناطق
-    setupDropZone(waitingWorkshop);
-    setupDropZone(outWorkshop);
-    
-    subsectionDropZones.forEach(zone => {
+    allDropZones.forEach(zone => {
         setupDropZone(zone);
     });
-
-    // أحداث السحب والإفلات الخاصة بالورشة الرئيسية (Workshop)
-    workshop.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const targetIsSubsection = e.target.closest('.subsection-drop-zone');
-        // إذا كان draggedItem موجودًا وليس حاليًا في الورشة الرئيسية أو إحدى أقسامها الفرعية
-        if (draggedItem && !targetIsSubsection && !workshop.contains(draggedItem)) {
-            workshop.classList.add('drag-over');
-        } else {
-            workshop.classList.remove('drag-over');
-        }
-    });
-
-    workshop.addEventListener('dragleave', () => {
-        workshop.classList.remove('drag-over');
-    });
-
-    workshop.addEventListener('drop', (e) => {
-        e.preventDefault();
-        workshop.classList.remove('drag-over');
-
-        const targetIsSubsection = e.target.closest('.subsection-drop-zone');
-        // إذا لم يكن الهدف قسماً فرعياً و draggedItem ليس بالفعل في الورشة الرئيسية أو إحدى أقسامها
-        if (!targetIsSubsection && draggedItem && !workshop.contains(draggedItem)) {
-            workshop.appendChild(draggedItem);
-            updateUnitColor(draggedItem, workshop);
-            // لا نفرز الورشة الرئيسية إلا إذا أردت ترتيب الوحدات فيها مباشرة
-            // sortUnitsAlphabetically(workshop); 
-        }
-    });
-
 
     // دالة إنشاء وحدة جديدة
     function createDraggableUnit(initialText = null) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
-        
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`; 
         newUnit.draggable = true;
 
+        // أحداث السحب بالماوس
         newUnit.addEventListener('dragstart', (e) => {
             draggedItem = newUnit;
-            e.dataTransfer.setData('text/plain', ''); // ضروري لفايرفوكس
+            e.dataTransfer.setData('text/plain', '');
             e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => {
-                newUnit.classList.add('dragging');
-            }, 0);
+            setTimeout(() => newUnit.classList.add('dragging'), 0);
         });
 
         newUnit.addEventListener('dragend', () => {
@@ -121,7 +108,34 @@ document.addEventListener('DOMContentLoaded', () => {
             draggedItem = null;
         });
 
+        // أحداث اللمس (هنا التغيير الرئيسي)
+        newUnit.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // منع السلوك الافتراضي (التمرير أو التحديد)
+            const currentTime = new Date().getTime();
+            const tapDifference = currentTime - lastTapTime;
+
+            if (tapDifference < doubleTapDelay && tapDifference > 0) {
+                // حدثت نقرتان بسرعة، هذا هو النقر المزدوج
+                e.stopPropagation(); // منع انتقال الحدث إلى أي عنصر آخر
+
+                if (draggedItem) {
+                    // إذا كان هناك عنصر آخر مسحوب بالفعل، قم بإفلاته أولاً
+                    draggedItem.classList.remove('dragging');
+                    draggedItem = null;
+                }
+
+                // "التقاط" الوحدة الجديدة
+                draggedItem = newUnit;
+                draggedItem.classList.add('dragging');
+
+                // إظهار رسالة أو أيقونة لتوضيح أن الوحدة أصبحت "ممسوكة" (اختياري)
+            }
+            lastTapTime = currentTime;
+        });
+
+        // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', () => {
+            // منطق تعديل النص كما هو
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
@@ -134,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
             inputField.focus();
 
             const saveChanges = () => {
-                newUnit.textContent = inputField.value.trim() || currentText; 
-                if (newUnit.contains(inputField)) { // التحقق قبل الإزالة
+                newUnit.textContent = inputField.value.trim() || currentText;
+                if (newUnit.contains(inputField)) {
                     newUnit.removeChild(inputField);
                 }
                 sortUnitsAlphabetically(newUnit.parentElement);
@@ -145,35 +159,34 @@ document.addEventListener('DOMContentLoaded', () => {
             inputField.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     saveChanges();
-                    inputField.blur(); // لإزالة التركيز وتشغيل blur event
+                    inputField.blur();
                 }
             });
         });
 
         waitingWorkshop.appendChild(newUnit); 
         newUnit.style.backgroundColor = 'var(--accent-orange)';
-        // لا نفرز هنا مباشرة بعد كل إضافة فردية في الحلقة
-        // سنقوم بالفرز مرة واحدة بعد إضافة كل المربعات الأولية.
     }
+    
+    // زر الإضافة
+    addUnitButton.addEventListener('click', () => createDraggableUnit());
 
-    addUnitButton.addEventListener('click', () => createDraggableUnit()); 
-
-    // **إضافة المربعات الابتدائية هنا**
+    // إضافة المربعات الأولية
     const totalInitialUnits = 236;
     const numberedUnitsStart = 3001;
-    const numberedUnitsEnd = 3221; 
+    const numberedUnitsEnd = 3221;
 
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
         if (i < (numberedUnitsEnd - numberedUnitsStart + 1)) {
             unitText = `${numberedUnitsStart + i}`;
         } else {
-            unitText = `وحدة رقم ${unitCount + 1}`; 
-            unitCount++; 
+            unitText = `وحدة رقم ${unitCount + 1}`;
+            unitCount++;
         }
         createDraggableUnit(unitText);
     }
     
-    // بعد إضافة جميع المربعات الأولية، قم بفرزها مرة واحدة
+    // الفرز النهائي بعد إضافة جميع المربعات
     sortUnitsAlphabetically(waitingWorkshop);
-});
+});vvvv
