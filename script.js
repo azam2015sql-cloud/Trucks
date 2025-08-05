@@ -1,17 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
     // العناصر الرئيسية
-    const waitingWorkshop = document.getElementById('waiting-workshop');
     const waitingUnitsContainer = document.getElementById('waiting-units');
     const workshopSections = {
-        cargo: document.getElementById('cargo'),
-        tipper: document.getElementById('tipper'),
-        tanker: document.getElementById('tanker'),
-        silo: document.getElementById('silo'),
-        rehb: document.getElementById('rehb'),
-        overhaul: document.getElementById('overhaul'),
-        sparePart: document.getElementById('spare-part')
+        cargo: {
+            element: document.getElementById('cargo'),
+            grid: document.querySelector('#cargo .units-grid'),
+            stat: document.getElementById('cargo-stat')
+        },
+        tipper: {
+            element: document.getElementById('tipper'),
+            grid: document.querySelector('#tipper .units-grid'),
+            stat: document.getElementById('tipper-stat')
+        },
+        tanker: {
+            element: document.getElementById('tanker'),
+            grid: document.querySelector('#tanker .units-grid'),
+            stat: document.getElementById('tanker-stat')
+        },
+        silo: {
+            element: document.getElementById('silo'),
+            grid: document.querySelector('#silo .units-grid'),
+            stat: document.getElementById('silo-stat')
+        },
+        rehb: {
+            element: document.getElementById('rehb'),
+            grid: document.querySelector('#rehb .units-grid'),
+            stat: document.getElementById('rehb-stat')
+        },
+        overhaul: {
+            element: document.getElementById('overhaul'),
+            grid: document.querySelector('#overhaul .units-grid'),
+            stat: document.getElementById('overhaul-stat')
+        },
+        sparePart: {
+            element: document.getElementById('spare-part'),
+            grid: document.querySelector('#spare-part .units-grid')
+        }
     };
-    const outWorkshop = document.getElementById('out-workshop');
+    const outWorkshopGrid = document.querySelector('#out-workshop .units-grid');
     
     // عناصر الحوارات
     const workshopDialog = document.getElementById('workshopDialog');
@@ -26,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // المتغيرات
     let selectedUnit = null;
-    let targetSection = null;
     
     // تهيئة الوحدات
     function initializeUnits() {
@@ -99,25 +124,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // التعامل مع نقر الوحدة
     function handleUnitClick(unit, isShiftPressed) {
         selectedUnit = unit;
-        const currentParent = unit.parentElement.parentElement;
+        const currentParent = getParentSection(unit);
         
-        if (currentParent.id === 'waiting-workshop') {
+        if (currentParent === 'waiting-workshop') {
             showWorkshopDialog();
         } 
-        else if (currentParent.id === 'spare-part') {
+        else if (currentParent === 'spare-part') {
             showWorkshopDialog();
         }
         else if (isShiftPressed) {
             showConfirmDialog('هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟', () => {
-                moveUnit(unit, outWorkshop.querySelector('.units-grid'));
+                moveUnit(unit, outWorkshopGrid);
             });
         }
-        else if (Object.values(workshopSections).some(section => section === currentParent)) {
+        else if (Object.keys(workshopSections).includes(currentParent) {
             moveToSparePart(unit);
         }
-        else if (currentParent.id === 'out-workshop') {
+        else if (currentParent === 'out-workshop') {
             moveToWaiting(unit);
         }
+    }
+    
+    // الحصول على القسم الأب للوحدة
+    function getParentSection(unit) {
+        const parentElement = unit.closest('.drop-zone, .subsection-drop-zone');
+        return parentElement ? parentElement.id : null;
     }
     
     // عرض حوار اختيار قسم الورشة
@@ -126,9 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#workshopDialog button[data-section]').forEach(btn => {
             btn.onclick = (e) => {
                 const sectionId = e.target.dataset.section;
-                targetSection = workshopSections[sectionId].querySelector('.units-grid');
+                const targetGrid = workshopSections[sectionId].grid;
                 workshopDialog.close();
-                moveUnit(selectedUnit, targetSection);
+                moveUnit(selectedUnit, targetGrid);
             };
         });
         
@@ -160,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // نقل الوحدة إلى قسم انتظار الإسبير
     function moveToSparePart(unit) {
-        moveUnit(unit, workshopSections.sparePart.querySelector('.units-grid'));
+        moveUnit(unit, workshopSections.sparePart.grid);
     }
     
     // نقل الوحدة إلى منطقة الانتظار
@@ -172,13 +203,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function moveUnit(unit, targetContainer) {
         if (unit && targetContainer && unit.parentElement !== targetContainer) {
             targetContainer.appendChild(unit);
-            updateUnitColor(unit, targetContainer.parentElement);
+            updateUnitColor(unit, targetContainer);
             updateAllCounts();
         }
     }
     
     // تحديث لون الوحدة حسب المنطقة
-    function updateUnitColor(unit, parentElement) {
+    function updateUnitColor(unit, targetContainer) {
+        const parentElement = targetContainer.closest('.drop-zone, .subsection-drop-zone');
+        if (!parentElement) return;
+        
         const colors = {
             'waiting-workshop': 'var(--accent-orange)',
             'cargo': 'var(--primary-blue)',
@@ -198,16 +232,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAllCounts() {
         // تحديث العدادت الرئيسية
         waitingCount.textContent = waitingUnitsContainer.children.length;
-        sparePartCount.textContent = workshopSections.sparePart.querySelector('.units-grid').children.length;
-        outCount.textContent = outWorkshop.querySelector('.units-grid').children.length;
+        sparePartCount.textContent = workshopSections.sparePart.grid.children.length;
+        outCount.textContent = outWorkshopGrid.children.length;
         
         // تحديث عداد الورشة الكلي
         let workshopTotal = 0;
-        Object.values(workshopSections).forEach(section => {
-            if (section.id !== 'spare-part') {
-                workshopTotal += section.querySelector('.units-grid').children.length;
+        
+        // تحديث إحصائيات الأقسام الفرعية
+        Object.keys(workshopSections).forEach(section => {
+            if (section !== 'sparePart') {
+                const count = workshopSections[section].grid.children.length;
+                workshopTotal += count;
+                if (workshopSections[section].stat) {
+                    workshopSections[section].stat.textContent = count;
+                }
             }
         });
+        
         workshopCount.textContent = workshopTotal;
         
         // تحديث العدادت في العناوين
