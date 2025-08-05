@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const addUnitButton = document.getElementById('addUnitButton');
     const workshop = document.getElementById('workshop');
     const outWorkshop = document.getElementById('out-workshop');
     const waitingWorkshop = document.getElementById('waiting-workshop');
     const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
 
-    let selectedUnit = null; // الوحدة المحددة حاليًا للنقل
-    let unitCount = 0;
+    let selectedUnit = null;
     
     // دالة لفرز الوحدات أبجديًا
     function sortUnitsAlphabetically(container) {
@@ -34,11 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // دالة لتحديد وحدة
     function selectUnit(unit) {
-        // إزالة التحديد من أي وحدة سابقة
         if (selectedUnit) {
             selectedUnit.classList.remove('selected');
         }
-        // تحديد الوحدة الجديدة
         selectedUnit = unit;
         selectedUnit.classList.add('selected');
     }
@@ -46,13 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // دالة لنقل الوحدة المحددة إلى منطقة جديدة
     function moveSelectedUnitTo(targetDropZone) {
         if (selectedUnit) {
-            // التحقق من أن الوحدة المحددة ليست في نفس المنطقة بالفعل
             if (selectedUnit.parentElement !== targetDropZone) {
                 targetDropZone.appendChild(selectedUnit);
                 updateUnitColor(selectedUnit, targetDropZone);
                 sortUnitsAlphabetically(targetDropZone);
             }
-            // إزالة التحديد بعد النقل
             selectedUnit.classList.remove('selected');
             selectedUnit = null;
         }
@@ -63,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     allDropZones.forEach(zone => {
         zone.addEventListener('click', (e) => {
             e.preventDefault();
-            // إذا كان هناك وحدة محددة، قم بنقلها إلى هذه المنطقة
             if (selectedUnit) {
                 moveSelectedUnitTo(zone);
             }
@@ -73,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // تفويض الأحداث للتعامل مع النقر على زر الحذف
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-btn')) {
-            e.stopPropagation(); // منع النقر من الوصول إلى الوحدة أو المنطقة
+            e.stopPropagation();
             const unitToDelete = e.target.closest('.draggable-unit');
             if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
                 unitToDelete.parentElement.removeChild(unitToDelete);
@@ -91,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const unitTextSpan = document.createElement('span');
         unitTextSpan.className = 'unit-text-content';
-        unitTextSpan.textContent = initialText || `وحدة رقم ${++unitCount}`;
+        unitTextSpan.textContent = initialText;
         
         // إنشاء زر الحذف
         const deleteBtn = document.createElement('span');
@@ -104,13 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // حدث النقر على الوحدة لتحديدها
         newUnit.addEventListener('click', (e) => {
-            e.stopPropagation(); // منع النقر من الوصول إلى المنطقة الخلفية
+            e.stopPropagation();
             selectUnit(newUnit);
         });
 
         // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', (e) => {
-            e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
+            e.stopPropagation();
             
             const currentText = unitTextSpan.textContent;
             const inputField = document.createElement('input');
@@ -118,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputField.value = currentText;
             inputField.className = 'edit-unit-input';
 
-            newUnit.innerHTML = ''; // مسح المحتوى الحالي
+            newUnit.innerHTML = '';
             newUnit.appendChild(inputField);
             inputField.focus();
 
@@ -149,11 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUnitColor(newUnit, waitingWorkshop);
     }
     
-    // زر الإضافة
-    addUnitButton.addEventListener('click', () => createDraggableUnit());
-
     // إضافة المربعات الأولية
-    const totalInitialUnits = 236;
+    const totalInitialUnits = 235;
     let specialNumbersForLastBlock = [1551, 1552, 1553, 1554, 1555, 1556, 1557, 1558, 1560];
 
     for (let i = 0; i < totalInitialUnits; i++) {
@@ -167,11 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             unitText = `${3562 + (i - 222)}`;
         } else {
             const lastNumIndex = i - 226;
-            if (lastNumIndex < specialNumbersForLastBlock.length) {
-                unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
-            } else {
-                unitText = `وحدة إضافية ${++unitCount}`;
-            }
+            unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
         }
         createDraggableUnit(unitText);
     }
