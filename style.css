@@ -58,6 +58,7 @@ button:hover {
     background: linear-gradient(45deg, #4a9184 0%, var(--secondary-green) 100%);
 }
 
+/* تنسيق العناوين الجديدة خارج المستطيلات */
 .main-container {
     display: flex;
     width: 98%;
@@ -66,6 +67,14 @@ button:hover {
     justify-content: center;
     flex-wrap: wrap;
     align-items: flex-start;
+}
+
+.drop-zone-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-basis: calc(33.33% - 25px);
+    flex-grow: 1;
 }
 
 .drop-zone {
@@ -80,11 +89,9 @@ button:hover {
     align-items: stretch;
     min-height: 300px;
     gap: 20px;
-    flex-grow: 1;
-    flex-basis: calc(33.33% - 25px);
-    position: relative;
-    padding-top: 40px;
+    width: 100%;
     transition: all 0.3s ease;
+    margin-top: 20px;
 }
 
 .drop-zone:hover {
@@ -93,23 +100,10 @@ button:hover {
 }
 
 .drop-zone h2 {
-    margin: 0 auto;
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: fit-content;
-    max-width: calc(100% - 40px);
+    margin: -40px 0 20px 0;
     text-align: center;
-    border-bottom: none;
-    padding: 5px 12px;
-    z-index: 10;
-    background-color: var(--light-grey);
-    border-radius: 8px;
-    box-shadow: 0 2px 5px var(--shadow-light);
-    border: 2px solid var(--medium-grey);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    font-size: 1.4em;
+    font-weight: 700;
 }
 
 /* الألوان الجديدة الجذابة للمستطيلات وتعديل التنسيق */
@@ -124,8 +118,6 @@ button:hover {
 }
 #waiting-workshop h2 {
     color: var(--accent-orange);
-    border-color: var(--accent-orange);
-    background-color: #fff9f5;
 }
 
 #workshop {
@@ -134,8 +126,6 @@ button:hover {
 }
 #workshop h2 {
     color: var(--primary-blue);
-    border-color: var(--primary-blue);
-    background-color: #f6f9fc;
 }
 
 #out-workshop {
@@ -149,8 +139,6 @@ button:hover {
 }
 #out-workshop h2 {
     color: var(--danger-red);
-    border-color: var(--danger-red);
-    background-color: #fcf6f6;
 }
 
 .workshop-sections {
@@ -301,8 +289,11 @@ button:hover {
         max-width: 90%;
     }
 
-    .drop-zone {
+    .drop-zone-wrapper {
         flex-basis: calc(50% - 25px);
+    }
+    
+    .drop-zone {
         min-height: 250px;
     }
 
@@ -332,6 +323,10 @@ button:hover {
         max-width: 400px;
     }
 
+    .drop-zone-wrapper {
+        width: 100%;
+    }
+
     .drop-zone {
         width: 100%;
         min-height: 200px;
@@ -340,10 +335,8 @@ button:hover {
     }
 
     .drop-zone h2 {
-        font-size: 1em;
-        margin: -30px auto 10px auto;
-        padding: 3px 10px;
-        border-width: 1px;
+        font-size: 1.2em;
+        margin: 0 0 15px 0;
     }
 
     .workshop-sections {
