@@ -9,9 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedItem = null;
     let unitCount = 0;
     
-    // متغيرات لمنطق اللمس الطويل
-    let longPressTimer;
-    const longPressDelay = 500; // 500 مللي ثانية تعتبر لمسة طويلة
+    // متغيرات لمنطق اللمس اليدوي
+    let activeTouch = null;
+    let initialX = 0;
+    let initialY = 0;
+    let xOffset = 0;
+    let yOffset = 0;
 
     // دالة للتحقق مما إذا كان الجهاز يدعم اللمس
     function isTouchDevice() {
@@ -41,25 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
             unit.style.backgroundColor = 'var(--primary-blue)';
         }
     }
-
+    
     // دالة لمعالجة إفلات الوحدة
     function dropItem(targetDropZone) {
         if (draggedItem && draggedItem.parentElement !== targetDropZone) {
-            if (draggedItem.parentElement) {
-                draggedItem.parentElement.removeChild(draggedItem);
-            }
-            
             targetDropZone.appendChild(draggedItem);
             updateUnitColor(draggedItem, targetDropZone);
             sortUnitsAlphabetically(targetDropZone);
-
-            // إزالة تأثير السحب
-            draggedItem.classList.remove('dragging');
-            draggedItem = null;
         }
     }
 
-    // تهيئة مناطق الإسقاط بناءً على نوع الجهاز
+    // تهيئة مناطق الإسقاط
     function setupDropZones() {
         allDropZones.forEach(element => {
             // منطق الماوس (يعمل دائمًا)
@@ -78,19 +73,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     dropItem(element);
                 }
             });
-            
-            // منطق اللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
-            if (isTouchDevice()) {
-                element.addEventListener('touchstart', (e) => {
-                    // إذا كان هناك عنصر "ممسوك"، فإن لمس المنطقة سيؤدي إلى إفلاته
-                    if (draggedItem) {
-                        e.preventDefault();
-                        e.stopPropagation(); // منع انتقال الحدث
-                        dropItem(element);
-                    }
-                });
-            }
         });
+    }
+
+    // دالة لتهيئة أحداث اللمس على الوحدات
+    function setupTouchEvents(unit) {
+        unit.addEventListener('touchstart', touchStart);
+        unit.addEventListener('touchend', touchEnd);
+        unit.addEventListener('touchcancel', touchEnd);
+        unit.addEventListener('touchmove', touchMove);
+    }
+    
+    // وظيفة بدء اللمس
+    function touchStart(e) {
+        if (e.target.classList.contains('draggable-unit')) {
+            draggedItem = e.target;
+            const touch = e.touches[0];
+            
+            // حساب الإزاحة
+            xOffset = touch.clientX - draggedItem.getBoundingClientRect().left;
+            yOffset = touch.clientY - draggedItem.getBoundingClientRect().top;
+            
+            draggedItem.classList.add('dragging');
+            draggedItem.style.position = 'absolute';
+            draggedItem.style.zIndex = '1000';
+        }
+    }
+
+    // وظيفة حركة اللمس
+    function touchMove(e) {
+        if (draggedItem) {
+            e.preventDefault(); // منع التمرير فقط عندما يتم سحب العنصر
+            const touch = e.touches[0];
+            
+            // تحديث موقع العنصر
+            draggedItem.style.left = `${touch.clientX - xOffset}px`;
+            draggedItem.style.top = `${touch.clientY - yOffset}px`;
+        }
+    }
+    
+    // وظيفة انتهاء اللمس
+    function touchEnd(e) {
+        if (draggedItem) {
+            // إخفاء تأثير السحب
+            draggedItem.classList.remove('dragging');
+            draggedItem.style.position = 'static'; // إعادة الموضع إلى static
+
+            const touch = e.changedTouches[0];
+            const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            if (dropZone && allDropZones.some(zone => dropZone.closest(`#${zone.id}`))) {
+                const targetZone = allDropZones.find(zone => dropZone.closest(`#${zone.id}`));
+                dropItem(targetZone);
+            } else {
+                // إذا لم يتم الإفلات في منطقة صالحة، ارجع العنصر إلى مكانه الأصلي (أو إلى الورشة الرئيسية)
+                updateUnitColor(draggedItem, waitingWorkshop);
+                waitingWorkshop.appendChild(draggedItem);
+                sortUnitsAlphabetically(waitingWorkshop);
+            }
+            
+            // إعادة تعيين المتغيرات
+            draggedItem = null;
+            xOffset = 0;
+            yOffset = 0;
+        }
     }
 
     // دالة إنشاء وحدة جديدة
@@ -98,49 +144,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`; 
-        newUnit.draggable = true;
+        
+        // إذا كان الجهاز يدعم اللمس، لا تجعل draggable=true لتجنب التعارض
+        newUnit.draggable = !isTouchDevice();
 
-        // منطق السحب بالماوس (يعمل دائمًا)
-        newUnit.addEventListener('dragstart', (e) => {
-            draggedItem = newUnit;
-            e.dataTransfer.setData('text/plain', '');
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => newUnit.classList.add('dragging'), 0);
-        });
-        newUnit.addEventListener('dragend', () => {
-            newUnit.classList.remove('dragging');
-            draggedItem = null;
-        });
-
-        // منطق السحب باللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
         if (isTouchDevice()) {
-            newUnit.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-
-                // إذا كان هناك عنصر آخر مسحوب، قم بإفلاته أولاً
-                if (draggedItem && draggedItem !== newUnit) {
-                    draggedItem.classList.remove('dragging');
-                    draggedItem = null;
-                }
-
-                // بدء مؤقت اللمس الطويل
-                longPressTimer = setTimeout(() => {
-                    // بعد انتهاء المؤقت، "التقط" الوحدة
-                    draggedItem = newUnit;
-                    newUnit.classList.add('dragging');
-                    // منع سلوك التمرير فقط عند بدء السحب
-                    e.preventDefault();
-                }, longPressDelay);
+            setupTouchEvents(newUnit);
+        } else {
+            // منطق السحب بالماوس
+            newUnit.addEventListener('dragstart', (e) => {
+                draggedItem = newUnit;
+                e.dataTransfer.setData('text/plain', '');
+                e.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => newUnit.classList.add('dragging'), 0);
             });
-
-            newUnit.addEventListener('touchend', () => {
-                // إلغاء المؤقت إذا رفعت إصبعك قبل أن ينتهي
-                clearTimeout(longPressTimer);
-            });
-            
-            newUnit.addEventListener('touchcancel', () => {
-                // إلغاء المؤقت إذا تم إلغاء اللمس (مثلاً: مكالمة هاتفية)
-                clearTimeout(longPressTimer);
+            newUnit.addEventListener('dragend', () => {
+                newUnit.classList.remove('dragging');
+                draggedItem = null;
             });
         }
         
