@@ -8,60 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container">
+    <!-- حوار تسجيل الدخول -->
+    <dialog id="loginDialog" class="login-dialog">
+        <h3>تسجيل الدخول</h3>
+        <div class="dialog-content">
+            <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
+            <div id="loginError" class="error-message"></div>
+        </div>
+        <div class="dialog-options">
+            <button id="loginBtn">دخول</button>
+        </div>
+    </dialog>
+
+    <div class="app-container" id="mainApp" style="display: none;">
         <header class="main-header">
             <h1>إدارة الوحدات في الورشة</h1>
-            <div class="main-container">
-    <!-- قسم الانتظار -->
-    <div id="waiting-workshop" class="drop-zone">
-        <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
-        <div class="units-grid" id="waiting-units"></div>
-    </div>
-
-    <!-- أقسام الورشة -->
-    <div class="workshop-sections">
-        <div id="cargo" class="subsection-drop-zone">
-            <h3>Cargo <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="tipper" class="subsection-drop-zone">
-            <h3>Tipper <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="tanker" class="subsection-drop-zone">
-            <h3>Tanker <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="silo" class="subsection-drop-zone">
-            <h3>Silo <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="rehb" class="subsection-drop-zone">
-            <h3>Rehb <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="overhaul" class="subsection-drop-zone">
-            <h3>OverHaull <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-        
-        <div id="spare-part" class="subsection-drop-zone">
-            <h3>انتظار الإسبير <span class="count-badge">0</span></h3>
-            <div class="units-grid"></div>
-        </div>
-    </div>
-
-    <!-- قسم خارج الورشة -->
-    <div id="out-workshop" class="drop-zone">
-        <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
-        <div class="units-grid"></div>
-    </div>
-</div>
+            <div class="engineer-info">
+                <span id="currentEngineer">المهندس: غير معروف</span>
+                <button id="logoutBtn">تسجيل الخروج</button>
+            </div>
             <div class="search-container">
                 <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
                 <button id="clearSearch">مسح البحث</button>
@@ -89,13 +54,15 @@
             <div>خارج الورشة: <span id="out-count">0</span></div>
         </div>
 
-        <div class="main-container">
-            <div id="waiting-workshop" class="drop-zone">
-                <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
-                <div class="units-grid" id="waiting-units"></div>
+        <div class="main-grid-container">
+            <div class="workshop-column">
+                <div id="waiting-workshop" class="drop-zone">
+                    <h2>وحدات الانتظار <span class="count-badge">0</span></h2>
+                    <div class="units-grid" id="waiting-units"></div>
+                </div>
             </div>
 
-            <div class="workshop-sections">
+            <div class="workshop-column">
                 <div id="cargo" class="subsection-drop-zone">
                     <h3>Cargo <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
@@ -105,7 +72,9 @@
                     <h3>Tipper <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
                 </div>
-                
+            </div>
+
+            <div class="workshop-column">
                 <div id="tanker" class="subsection-drop-zone">
                     <h3>Tanker <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
@@ -115,7 +84,9 @@
                     <h3>Silo <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
                 </div>
-                
+            </div>
+
+            <div class="workshop-column">
                 <div id="rehb" class="subsection-drop-zone">
                     <h3>Rehb <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
@@ -125,16 +96,18 @@
                     <h3>OverHaull <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
                 </div>
-                
+            </div>
+
+            <div class="workshop-column">
                 <div id="spare-part" class="subsection-drop-zone">
                     <h3>انتظار الإسبير <span class="count-badge">0</span></h3>
                     <div class="units-grid"></div>
                 </div>
-            </div>
-
-            <div id="out-workshop" class="drop-zone">
-                <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
-                <div class="units-grid"></div>
+                
+                <div id="out-workshop" class="drop-zone">
+                    <h2>وحدات خارج الورشة <span class="count-badge">0</span></h2>
+                    <div class="units-grid"></div>
+                </div>
             </div>
         </div>
 
@@ -172,4 +145,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
