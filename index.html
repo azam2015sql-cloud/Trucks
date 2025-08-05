@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +10,21 @@
 <body>
     <h1>إدارة الوحدات في الورشة</h1>
 
-    <button id="addUnitButton">أضف وحدة جديدة</button>
+    <div class="controls">
+        <button id="addUnitButton">أضف وحدة جديدة</button>
+        <div class="search-container">
+            <input type="text" id="unitSearch" placeholder="ابحث عن وحدة...">
+            <button id="clearSearch">مسح البحث</button>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div>الانتظار: <span id="waiting-count">0</span></div>
+        <div>الورشة: <span id="workshop-count">0</span></div>
+        <div>خارج الورشة: <span id="out-count">0</span></div>
+    </div>
 
     <div class="main-container">
-        
         <div id="waiting-workshop" class="drop-zone">
             <h2>منطقة انتظار (Waiting Workshop)</h2>
         </div>
@@ -49,6 +60,14 @@
             <h2>خارج الورشة (OutWorkShop)</h2>
         </div>
     </div>
+
+    <dialog id="confirmDialog">
+        <p>هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟</p>
+        <div class="dialog-buttons">
+            <button id="confirmYes">نعم</button>
+            <button id="confirmNo">لا</button>
+        </div>
+    </dialog>
 
     <script src="script.js"></script>
 </body>
