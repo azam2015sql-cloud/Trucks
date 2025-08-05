@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const addUnitButton = document.getElementById('addUnitButton');
-    const workshop = document.getElementById('workshop');
-    const outWorkshop = document.getElementById('out-workshop');
     const waitingWorkshop = document.getElementById('waiting-workshop');
-    const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
-    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
+    const allDropZones = document.querySelectorAll('.drop-zone, .subsection-drop-zone');
 
     let draggedItem = null;
     let unitCount = 0;
@@ -31,16 +28,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function handleDrop(targetDropZone) {
+        if (draggedItem && targetDropZone && draggedItem.parentElement !== targetDropZone) {
+            targetDropZone.appendChild(draggedItem);
+            updateUnitColor(draggedItem, targetDropZone);
+            sortUnitsAlphabetically(targetDropZone);
+        }
+        
+        if (draggedItem) {
+            draggedItem.classList.remove('dragging');
+            draggedItem.style.removeProperty('position');
+            draggedItem.style.removeProperty('top');
+            draggedItem.style.removeProperty('left');
+            draggedItem.style.removeProperty('z-index');
+            draggedItem.style.removeProperty('opacity');
+            draggedItem.style.removeProperty('transform');
+            draggedItem = null;
+        }
+        document.querySelectorAll('.drag-over').forEach(zone => zone.classList.remove('drag-over'));
+    }
+
     function createDraggableUnit(initialText = null) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
         newUnit.draggable = true;
 
-        // منطق السحب بالماوس (يعمل دائمًا)
+        // منطق السحب بالماوس
         newUnit.addEventListener('dragstart', (e) => {
             draggedItem = newUnit;
             e.dataTransfer.setData('text/plain', '');
+            e.dataTransfer.effectAllowed = 'move';
             setTimeout(() => newUnit.classList.add('dragging'), 0);
         });
         newUnit.addEventListener('dragend', () => {
@@ -48,27 +66,23 @@ document.addEventListener('DOMContentLoaded', () => {
             draggedItem = null;
         });
 
-        // منطق النقر المزدوج (يعمل على جميع الأجهزة)
+        // منطق النقر المزدوج (للكمبيوتر واللمس)
         newUnit.addEventListener('dblclick', () => {
             if (draggedItem) {
-                // إذا كان هناك عنصر آخر "ممسوك" بالفعل، قم بإفلاته أولاً
                 draggedItem.classList.remove('dragging');
             }
-            // "التقاط" العنصر الجديد
             draggedItem = newUnit;
             newUnit.classList.add('dragging');
         });
 
         // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', (e) => {
-            // توقف عن معالجة حدث النقر المزدوج للسحب
-            e.stopPropagation();
-
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
             inputField.value = currentText;
             inputField.className = 'edit-unit-input';
+            e.stopPropagation(); // منع انتقال السحب والإفلات
 
             newUnit.textContent = '';
             newUnit.appendChild(inputField);
@@ -100,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // منطق الماوس
         element.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
             element.classList.add('drag-over');
         });
         element.addEventListener('dragleave', () => {
@@ -108,24 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('drop', (e) => {
             e.preventDefault();
             element.classList.remove('drag-over');
-            if (draggedItem && draggedItem.parentElement !== element) {
-                element.appendChild(draggedItem);
-                updateUnitColor(draggedItem, element);
-                sortUnitsAlphabetically(element);
-                draggedItem.classList.remove('dragging');
-                draggedItem = null;
-            }
+            handleDrop(element);
         });
 
-        // منطق النقر (يعمل على جميع الأجهزة)
+        // منطق النقر للإلقاء (للكمبيوتر واللمس)
         element.addEventListener('click', () => {
-            if (draggedItem && draggedItem.parentElement !== element) {
-                element.appendChild(draggedItem);
-                updateUnitColor(draggedItem, element);
-                sortUnitsAlphabetically(element);
-                draggedItem.classList.remove('dragging');
-                draggedItem = null;
-            }
+            handleDrop(element);
         });
     });
 
