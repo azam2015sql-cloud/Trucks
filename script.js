@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const waitingWorkshop = document.getElementById('waiting-workshop');
     const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
 
+    let selectedUnit = null; // الوحدة المحددة حاليًا للنقل
     let unitCount = 0;
-
+    
     // دالة لفرز الوحدات أبجديًا
     function sortUnitsAlphabetically(container) {
         const units = Array.from(container.querySelectorAll('.draggable-unit'));
@@ -30,21 +31,41 @@ document.addEventListener('DOMContentLoaded', () => {
             unit.style.backgroundColor = 'var(--primary-blue)';
         }
     }
-    
-    // إعداد مكتبة SortableJS لجميع مناطق الإسقاط
-    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
 
+    // دالة لتحديد وحدة
+    function selectUnit(unit) {
+        // إزالة التحديد من أي وحدة سابقة
+        if (selectedUnit) {
+            selectedUnit.classList.remove('selected');
+        }
+        // تحديد الوحدة الجديدة
+        selectedUnit = unit;
+        selectedUnit.classList.add('selected');
+    }
+
+    // دالة لنقل الوحدة المحددة إلى منطقة جديدة
+    function moveSelectedUnitTo(targetDropZone) {
+        if (selectedUnit) {
+            // التحقق من أن الوحدة المحددة ليست في نفس المنطقة بالفعل
+            if (selectedUnit.parentElement !== targetDropZone) {
+                targetDropZone.appendChild(selectedUnit);
+                updateUnitColor(selectedUnit, targetDropZone);
+                sortUnitsAlphabetically(targetDropZone);
+            }
+            // إزالة التحديد بعد النقل
+            selectedUnit.classList.remove('selected');
+            selectedUnit = null;
+        }
+    }
+    
+    // تهيئة مناطق الإسقاط
+    const allDropZones = [workshop, outWorkshop, waitingWorkshop, ...Array.from(subsectionDropZones)];
     allDropZones.forEach(zone => {
-        Sortable.create(zone, {
-            group: 'shared', // يسمح بسحب العناصر بين جميع المجموعات
-            animation: 150,
-            ghostClass: 'dragging', // هذا الكلاس سيُضاف عند السحب لتعديل مظهره
-            onEnd: function(evt) {
-                // عند انتهاء السحب
-                const unit = evt.item;
-                const newParent = evt.to;
-                updateUnitColor(unit, newParent);
-                sortUnitsAlphabetically(newParent);
+        zone.addEventListener('click', (e) => {
+            e.preventDefault();
+            // إذا كان هناك وحدة محددة، قم بنقلها إلى هذه المنطقة
+            if (selectedUnit) {
+                moveSelectedUnitTo(zone);
             }
         });
     });
@@ -55,13 +76,21 @@ document.addEventListener('DOMContentLoaded', () => {
         newUnit.className = 'draggable-unit';
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
         
-        // دبل كليك لتعديل النص
+        // حدث النقر على الوحدة لتحديدها
+        newUnit.addEventListener('click', (e) => {
+            e.stopPropagation(); // منع النقر من الوصول إلى المنطقة الخلفية
+            selectUnit(newUnit);
+        });
+
+        // دبل كليك لتعديل النص (سواء بالماوس أو باللمس)
         newUnit.addEventListener('dblclick', (e) => {
+            e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
             inputField.value = currentText;
             inputField.className = 'edit-unit-input';
+
             newUnit.textContent = '';
             newUnit.appendChild(inputField);
             inputField.focus();
