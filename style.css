@@ -2,27 +2,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
 :root {
-    /* لوحة الألوان الجديدة */
-    --primary-blue: #4A90E2; /* أزرق أساسي */
-    --secondary-green: #50E3C2; /* أخضر ثانوي */
-    --accent-orange: #FF9F43; /* برتقالي مميز */
-    --danger-red: #FF6B6B; /* أحمر للخطر/الخارج */
-    --light-grey: #F5F7FA; /* رمادي فاتح للخلفية */
-    --medium-grey: #E8ECF2; /* رمادي متوسط للعناصر */
-    --dark-grey: #334E68; /* رمادي داكن للنصوص */
+    /* لوحة الألوان الجديدة العصرية */
+    --primary-blue: #007bff; /* أزرق نقي */
+    --secondary-green: #28a745; /* أخضر طبيعي */
+    --accent-orange: #ffc107; /* برتقالي دافئ */
+    --danger-red: #dc3545; /* أحمر عميق */
+    --light-grey: #f8f9fa; /* رمادي فاتح للخلفية */
+    --medium-grey: #e9ecef; /* رمادي متوسط للعناصر */
+    --dark-grey: #343a40; /* رمادي داكن للنصوص */
     --white: #FFFFFF; /* أبيض */
     --shadow-light: rgba(0, 0, 0, 0.08);
     --shadow-medium: rgba(0, 0, 0, 0.15);
 }
 
 body {
-    font-family: 'Cairo', sans-serif; /* استخدام خط القاهرة الأنيق */
+    font-family: 'Cairo', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
     padding: 30px 20px;
-    background: linear-gradient(135deg, var(--light-grey) 0%, var(--medium-grey) 100%); /* خلفية متدرجة */
+    background: linear-gradient(135deg, #f0f4f8 0%, #e0e6ea 100%); /* خلفية متدرجة عصرية */
     color: var(--dark-grey);
     overflow-x: hidden;
     min-height: 100vh;
@@ -30,7 +30,7 @@ body {
 }
 
 h1 {
-    color: var(--primary-blue);
+    color: var(--dark-grey);
     margin-bottom: 30px;
     font-size: 2.8em;
     font-weight: 700;
@@ -40,51 +40,51 @@ h1 {
 button {
     padding: 15px 35px;
     font-size: 1.1em;
-    background: linear-gradient(45deg, var(--secondary-green) 0%, #4CAF50 100%); /* زر بألوان متدرجة */
+    background: linear-gradient(45deg, #4CAF50 0%, #28a745 100%);
     color: var(--white);
     border: none;
-    border-radius: 30px; /* أزرار دائرية أكثر */
+    border-radius: 30px;
     cursor: pointer;
     margin-bottom: 40px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 16px var(--shadow-medium);
+    box-shadow: 0 8px 16px rgba(40, 167, 69, 0.2);
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 button:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 20px var(--shadow-medium);
-    background: linear-gradient(45deg, #4CAF50 0%, var(--secondary-green) 100%);
+    box-shadow: 0 12px 20px rgba(40, 167, 69, 0.3);
+    background: linear-gradient(45deg, #28a745 0%, #4CAF50 100%);
 }
 
 .main-container {
     display: flex;
-    width: 98%; /* توسيع العرض قليلاً */
-    max-width: 1300px; /* تحديد أقصى عرض */
-    gap: 25px; /* زيادة المسافة بين المستطيلات الرئيسية */
+    width: 98%;
+    max-width: 1300px;
+    gap: 25px;
     justify-content: center;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     align-items: flex-start;
 }
 
 .drop-zone {
-    border: 2px solid var(--medium-grey); /* حدود خارجية للمستطيلات الرئيسية */
+    border: 2px solid var(--medium-grey);
     background-color: var(--white);
-    padding: 25px; /* بادينغ داخلي عادي */
-    border-radius: 15px; /* أركان أكثر دائرية */
-    box-shadow: 0 6px 18px var(--shadow-light); /* ظلال ناعمة */
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px var(--shadow-light);
     box-sizing: border-box;
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     align-items: stretch;
-    min-height: 300px; /* زيادة الحد الأدنى للارتفاع */
-    gap: 20px; /* زيادة المسافة بين العناصر الداخلية */
+    min-height: 300px;
+    gap: 20px;
     flex-grow: 1;
-    flex-basis: calc(33.33% - 25px); /* الحفاظ على تخطيط 3 أعمدة */
-    position: relative; /* لتمكين وضع العناوين النسبية له */
-    padding-top: 40px; /* زيادة padding-top لترك مساحة كافية بعد العنوان */
-    transition: all 0.3s ease; /* إضافة انتقال لتحسين التفاعل */
+    flex-basis: calc(33.33% - 25px);
+    position: relative;
+    padding-top: 40px;
+    transition: all 0.3s ease;
 }
 
 .drop-zone:hover {
@@ -92,104 +92,88 @@ button:hover {
     box-shadow: 0 10px 25px var(--shadow-medium);
 }
 
-/* تعديل موقع وشكل عناوين المستطيلات الرئيسية */
 .drop-zone h2 {
-    margin: -35px auto 10px auto; /* سحب العنوان للأعلى ووسيطته أفقياً، مسافة أقل من الأسفل */
+    margin: -35px auto 10px auto;
     color: var(--primary-blue);
-    font-size: 1.2em; /* تصغير حجم الخط */
+    font-size: 1.2em;
     font-weight: 700;
-    width: fit-content; 
-    max-width: calc(100% - 40px); 
+    width: fit-content;
+    max-width: calc(100% - 40px);
     text-align: center;
-    border-bottom: none; /* إزالة الخط السفلي */
-    padding: 5px 12px; /* بادينغ أصغر حول النص */
-    z-index: 10; 
-    background-color: var(--light-grey); 
-    border-radius: 8px; /* أركان دائرية بالكامل */
-    box-shadow: 0 2px 5px var(--shadow-light); /* ظل أصغر وأكثر نعومة */
-    /* إضافة حدود تتناسب مع المستطيل الأساسي */
-    border: 2px solid var(--medium-grey); /* حدود العنوان */
-    border-bottom-left-radius: 0; /* إزالة الحدود السفلية ليتصل بالمستطيل */
+    border-bottom: none;
+    padding: 5px 12px;
+    z-index: 10;
+    background-color: var(--light-grey);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    border: 2px solid var(--medium-grey);
+    border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-/* الأنماط لمحتوى المربعات داخل مناطق drop-zone الرئيسية (Waiting & Out) */
-#waiting-workshop, #out-workshop {
-    display: flex;
-    flex-direction: row; 
-    flex-wrap: wrap;     
-    justify-content: flex-start; 
-    align-content: flex-start;   
-    align-items: flex-start; 
-    gap: 10px; /* زيادة المسافة بين المربعات */
-    padding: 10px; 
-    flex-grow: 1; 
-}
-
-/* نمط خاص لـ Waiting Workshop */
+/* الألوان الجديدة الجذابة للمستطيلات */
 #waiting-workshop {
-    border-color: var(--accent-orange); 
-    background-color: #FFF9ED; 
+    border-color: #ff914d;
+    background-color: #fff8f0;
 }
 #waiting-workshop h2 {
-    color: var(--accent-orange);
-    border-color: var(--accent-orange); /* حدود العنوان بنفس لون المستطيل */
-    background-color: #FFF9ED; 
+    color: #ff914d;
+    border-color: #ff914d;
+    background-color: #fff8f0;
 }
 
 #workshop {
-    border-color: var(--primary-blue);
-    background-color: #EBF4FA; 
+    border-color: #5d9cec;
+    background-color: #f0f7ff;
 }
 #workshop h2 {
-    color: var(--primary-blue);
-    border-color: var(--primary-blue); /* حدود العنوان بنفس لون المستطيل */
-    background-color: #EBF4FA; 
+    color: #5d9cec;
+    border-color: #5d9cec;
+    background-color: #f0f7ff;
 }
 
 #out-workshop {
-    border-color: var(--danger-red);
-    background-color: #FFF0F0; 
+    border-color: #ff6f69;
+    background-color: #fff0ef;
 }
 #out-workshop h2 {
-    color: var(--danger-red);
-    border-color: var(--danger-red); /* حدود العنوان بنفس لون المستطيل */
-    background-color: #FFF0F0; 
+    color: #ff6f69;
+    border-color: #ff6f69;
+    background-color: #fff0ef;
 }
 
 
 .workshop-sections {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-    gap: 20px; 
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
     width: 100%;
     flex-grow: 1;
 }
 
 .subsection-drop-zone {
-    border: 1px solid var(--medium-grey); 
+    border: 1px solid var(--medium-grey);
     background-color: var(--white);
-    border-radius: 10px; 
-    min-height: 150px; 
+    border-radius: 10px;
+    min-height: 150px;
     box-sizing: border-box;
     transition: all 0.2s ease;
-    position: relative; 
-    padding-top: 65px; 
-
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
-    gap: 8px; 
-    align-content: start; 
-    justify-items: center; 
-    padding-left: 10px; 
-    padding-right: 10px; 
-    padding-bottom: 10px; 
-    box-shadow: 0 2px 8px var(--shadow-light); 
+    position: relative;
+    padding-top: 65px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); /* تم التعديل ليناسب الحجم الجديد */
+    gap: 8px;
+    align-content: start;
+    justify-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .subsection-drop-zone:hover {
     box-shadow: 0 4px 12px var(--shadow-medium);
-    border-color: var(--primary-blue); 
+    border-color: var(--primary-blue);
 }
 
 .subsection-drop-zone h3 {
@@ -197,78 +181,78 @@ button:hover {
     color: var(--dark-grey);
     font-size: 1.1em;
     font-weight: 700;
-    position: absolute; 
-    top: 25px; 
+    position: absolute;
+    top: 25px;
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 20px);
     text-align: center;
-    border-bottom: 1px dashed var(--medium-grey); 
+    border-bottom: 1px dashed var(--medium-grey);
     padding-bottom: 8px;
-    z-index: 10; 
-    background-color: var(--white); 
-    padding-top: 5px; 
-    border-radius: 8px 8px 0 0; 
+    z-index: 10;
+    background-color: var(--white);
+    padding-top: 5px;
+    border-radius: 8px 8px 0 0;
 }
 
 /* تأثير السحب والإفلات */
 .drop-zone.drag-over, .subsection-drop-zone.drag-over {
-    background-color: #D6E9F8; 
+    background-color: #D6E9F8;
     border-color: var(--primary-blue);
-    box-shadow: 0 0 20px rgba(74, 144, 226, 0.7); 
-    transform: scale(1.01); 
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.7);
+    transform: scale(1.01);
 }
 
-/* المربعات القابلة للسحب */
-.draggable-unit { 
-    width: 60px; 
-    height: 60px; 
-    background-color: var(--primary-blue); 
+/* المربعات القابلة للسحب (تم تصغير حجمها) */
+.draggable-unit {
+    width: 30px; /* تم تصغير الحجم */
+    height: 30px; /* تم تصغير الحجم */
+    background-color: var(--primary-blue);
     color: var(--white);
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: grab;
-    border-radius: 8px; 
+    border-radius: 4px; /* تم تصغير الحدود */
     box-shadow: 2px 2px 6px var(--shadow-medium);
     font-weight: 700;
     user-select: none;
     transition: all 0.2s ease;
     word-break: break-all;
     text-align: center;
-    padding: 5px; 
-    font-size: 0.8em; 
+    padding: 2px; /* تم تصغير البادينغ */
+    font-size: 0.6em; /* تم تصغير حجم الخط */
     line-height: 1.3;
-    z-index: 15; 
+    z-index: 15;
 }
 
 .draggable-unit:hover {
-    background-color: #3A7ACF; 
+    background-color: #3A7ACF;
     box-shadow: 3px 3px 8px var(--shadow-medium);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .draggable-unit.dragging {
-    opacity: 0.7; 
-    border: 3px dashed var(--accent-orange); 
-    transform: scale(1.08); 
+    opacity: 0.7;
+    border: 3px dashed var(--accent-orange);
+    transform: scale(1.08);
     box-shadow: 0 5px 15px var(--shadow-medium);
 }
 
 .draggable-unit input[type="text"] {
-    width: calc(100% - 10px); 
+    width: calc(100% - 4px); /* تم التعديل */
     border: none;
-    background: rgba(255, 255, 255, 0.2); 
+    background: rgba(255, 255, 255, 0.2);
     color: var(--white);
     font-weight: 700;
     text-align: center;
-    padding: 3px 5px;
-    margin-top: 3px; 
-    font-size: 0.8em;
+    padding: 1px 2px; /* تم التعديل */
+    margin-top: 1px;
+    font-size: 0.6em;
     outline: none;
-    border-radius: 4px;
-    caret-color: var(--white); 
+    border-radius: 2px;
+    caret-color: var(--white);
 }
 
 /* ألوان خاصة للمربعات عند الانتقال لمناطق معينة */
@@ -303,17 +287,17 @@ button:hover {
 
 @media (max-width: 992px) {
     .main-container {
-        flex-basis: calc(50% - 25px); /* عمودين في الشاشات المتوسطة */
-        max-width: 90%; /* توسيع العرض قليلاً */
+        flex-basis: calc(50% - 25px);
+        max-width: 90%;
     }
 
     .drop-zone {
-        flex-basis: calc(50% - 25px); /* عمودين */
+        flex-basis: calc(50% - 25px);
         min-height: 250px;
     }
 
     .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* أقسام فرعية أصغر */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         gap: 15px;
     }
 }
@@ -331,53 +315,54 @@ button:hover {
     }
 
     .main-container {
-        flex-direction: column; /* عمود واحد في الشاشات الصغيرة جداً */
+        flex-direction: column;
         align-items: center;
-        gap: 40px; /* مسافة أكبر بين المستطيلات العمودية */
-        width: 100%; /* استخدام العرض الكامل */
-        max-width: 400px; /* تحديد أقصى عرض لكل مستطيل */
+        gap: 40px;
+        width: 100%;
+        max-width: 400px;
     }
 
     .drop-zone {
-        width: 100%; /* اجعل كل منطقة Drop Zone تأخذ العرض الكامل */
+        width: 100%;
         min-height: 200px;
         padding: 20px;
         border-radius: 10px;
     }
 
     .drop-zone h2 {
-        font-size: 1em; /* تصغير حجم عنوان المنطقة الرئيسية */
-        margin: -30px auto 10px auto; /* تعديل المارجن ليناسب الحجم الجديد */
+        font-size: 1em;
+        margin: -30px auto 10px auto;
         padding: 3px 10px;
-        border-width: 1px; /* حدود أرق قليلاً */
+        border-width: 1px;
     }
 
     .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* أقسام فرعية أصغر جداً */
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
         gap: 10px;
     }
 
     .subsection-drop-zone {
         min-height: 120px;
-        padding-top: 55px; /* تعديل padding-top للعناوين الفرعية */
+        padding-top: 55px;
         border-width: 1px;
         border-radius: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(25px, 1fr)); /* تم التعديل */
     }
 
     .subsection-drop-zone h3 {
-        font-size: 0.9em; /* تصغير حجم عنوان القسم الفرعي */
-        top: 20px; /* تعديل موقع العنوان الفرعي */
+        font-size: 0.9em;
+        top: 20px;
         padding-bottom: 5px;
     }
 
     .draggable-unit {
-        width: 50px; /* تصغير حجم المربعات */
-        height: 50px;
-        font-size: 0.7em;
-        padding: 3px;
+        width: 25px; /* تم تصغير الحجم */
+        height: 25px; /* تم تصغير الحجم */
+        font-size: 0.6em;
+        padding: 2px;
     }
 
     .draggable-unit input[type="text"] {
-        font-size: 0.7em;
+        font-size: 0.6em;
     }
 }
