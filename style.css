@@ -70,15 +70,19 @@ h1 {
     border: 2px dashed var(--medium-grey);
     border-radius: 15px;
     padding: 20px;
-    flex-basis: 30%; /* كل مستطيل يأخذ حوالي 30% من العرض */
+    flex: 1; /* جعل المناطق تتمدد لتملأ المساحة */
     min-width: 250px;
     min-height: 400px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* تصحيح: لجعل المربعات الصغيرة تترتب أفقياً */
+    flex-wrap: wrap; /* تصحيح: لجعل المربعات تنتقل لسطر جديد */
+    justify-content: flex-start; /* تصحيح: لتبدأ المربعات من اليسار */
+    align-items: flex-start; /* تصحيح: لتبدأ المربعات من الأعلى */
+    align-content: flex-start;
     position: relative;
     box-shadow: 0 8px 16px var(--shadow-light);
     transition: border-color 0.3s ease;
+    gap: 10px; /* مسافة بين المربعات الصغيرة */
 }
 
 .drop-zone h2 {
@@ -97,8 +101,8 @@ h1 {
 }
 
 .workshop-sections {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    display: flex; /* تصحيح: لجعل مناطق الورشة تترتب أفقياً */
+    flex-wrap: wrap;
     gap: 15px;
     width: 100%;
     margin-top: 15px;
@@ -109,14 +113,18 @@ h1 {
     border: 2px dashed var(--medium-grey);
     border-radius: 10px;
     min-height: 150px;
+    flex: 1; /* لجعل مناطق الورشة تتمدد */
+    min-width: 120px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* تصحيح: لجعل المربعات تترتب أفقياً */
+    flex-wrap: wrap; /* تصحيح: لجعل المربعات تنتقل لسطر جديد */
     justify-content: flex-start;
+    align-items: flex-start;
     padding: 20px 10px;
     padding-top: 50px; /* مساحة أعلى للعنوان */
     position: relative;
     transition: background-color 0.3s ease;
+    gap: 10px;
 }
 
 .subsection-drop-zone h3 {
@@ -137,7 +145,6 @@ h1 {
     padding: 12px 20px;
     border-radius: 10px;
     text-align: center;
-    margin-bottom: 15px;
     cursor: grab;
     box-shadow: 0 2px 4px var(--shadow-medium);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -147,6 +154,8 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: calc(25% - 10px); /* تصحيح: لجعل 4 مربعات في الصف مع المسافات */
+    box-sizing: border-box; /* لضمان أن العرض يشمل الحشو والحدود */
 }
 
 .draggable-unit.selected {
@@ -250,5 +259,9 @@ h1 {
     .subsection-drop-zone h3 {
         font-size: 0.9em;
         padding: 2px 10px;
+    }
+
+    .draggable-unit {
+        width: calc(50% - 10px); /* على الأجهزة الصغيرة، مربعان في الصف */
     }
 }
