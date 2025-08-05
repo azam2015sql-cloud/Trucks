@@ -403,4 +403,10 @@ button:hover {
     .draggable-unit input[type="text"] {
         font-size: 0.6em;
     }
+    .draggable-unit.selected {
+    border: 2px solid var(--secondary-green);
+    box-shadow: 0 0 10px var(--secondary-green);
+    transform: scale(1.02);
 }
+}
+
