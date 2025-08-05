@@ -359,7 +359,6 @@ button:hover {
         padding-top: 55px;
         border-width: 1px;
         border-radius: 8px;
-        /* تم التعديل لعرض 3 مربعات في كل صف */
         grid-template-columns: repeat(3, 1fr);
     }
 
@@ -379,10 +378,4 @@ button:hover {
     .draggable-unit input[type="text"] {
         font-size: 0.7em;
     }
-    .draggable-unit.selected {
-    border: 2px solid var(--secondary-green);
-    box-shadow: 0 0 10px var(--secondary-green);
-    transform: scale(1.02);
 }
-}
-
