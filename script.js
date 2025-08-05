@@ -76,19 +76,43 @@ document.addEventListener('DOMContentLoaded', () => {
         newUnit.className = 'draggable-unit';
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
         
+        // إنشاء زر الحذف
+        const deleteBtn = document.createElement('span');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '×';
+        
+        // حدث النقر على زر الحذف
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // منع النقر من تحديد الوحدة
+            if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
+                newUnit.parentElement.removeChild(newUnit);
+                // إذا كانت الوحدة المحذوفة هي المحددة حاليًا، أزل التحديد
+                if (selectedUnit === newUnit) {
+                    selectedUnit = null;
+                }
+            }
+        });
+
+        // إضافة زر الحذف إلى الوحدة
+        newUnit.appendChild(deleteBtn);
+        
         // حدث النقر على الوحدة لتحديدها
         newUnit.addEventListener('click', (e) => {
             e.stopPropagation(); // منع النقر من الوصول إلى المنطقة الخلفية
             selectUnit(newUnit);
         });
 
-        // دبل كليك لتعديل النص (سواء بالماوس أو باللمس)
+        // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', (e) => {
             e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
+            
+            // إزالة زر الحذف مؤقتًا أثناء التعديل
+            deleteBtn.style.display = 'none';
+
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
-            inputField.value = currentText;
+            inputField.value = currentText.replace('×', '').trim(); // إزالة زر الحذف من النص
             inputField.className = 'edit-unit-input';
 
             newUnit.textContent = '';
@@ -97,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const saveChanges = () => {
                 newUnit.textContent = inputField.value.trim() || currentText;
+                // إعادة إضافة زر الحذف
+                newUnit.appendChild(deleteBtn);
+                deleteBtn.style.display = 'block';
+
                 if (newUnit.contains(inputField)) {
                     newUnit.removeChild(inputField);
                 }
@@ -126,27 +154,18 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
 
-        // من المربع رقم 1 حتى 221 (i=0 to 220)
         if (i < 221) {
             unitText = `${3001 + i}`;
-        } 
-        // المربع رقم 222 (i=221)
-        else if (i === 221) {
+        } else if (i === 221) {
             unitText = '3234';
-        }
-        // من المربع رقم 223 حتى 226 (i=222 to 225)
-        else if (i > 221 && i < 226) {
+        } else if (i > 221 && i < 226) {
             unitText = `${3562 + (i - 222)}`;
-        }
-        // من المربع رقم 227 حتى الأخير (i=226 to 235)
-        else {
+        } else {
             const lastNumIndex = i - 226;
             if (lastNumIndex < specialNumbersForLastBlock.length) {
                 unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
             } else {
-                // التعامل مع المربع الأخير في حالة وجود اختلاف في الأعداد
-                unitText = `وحدة إضافية ${unitCount + 1}`;
-                unitCount++;
+                unitText = `وحدة إضافية ${++unitCount}`;
             }
         }
         createDraggableUnit(unitText);
