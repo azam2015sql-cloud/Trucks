@@ -22,246 +22,362 @@ body {
     align-items: center;
     margin: 0;
     padding: 30px 20px;
-    background: linear-gradient(135deg, var(--light-grey) 0%, var(--medium-grey) 100%);
+    background: linear-gradient(135deg, var(--light-grey) 0%, var(--medium-grey) 100%); /* خلفية متدرجة */
     color: var(--dark-grey);
+    overflow-x: hidden;
     min-height: 100vh;
-    overflow-x: hidden; /* منع التمرير الأفقي */
+    box-sizing: border-box;
 }
 
 h1 {
-    font-size: 2.5em;
+    color: var(--primary-blue);
+    margin-bottom: 30px;
+    font-size: 2.8em;
     font-weight: 700;
-    color: var(--dark-grey);
-    text-shadow: 1px 1px 2px var(--shadow-light);
-    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px var(--shadow-light);
 }
 
-#addUnitButton {
-    background-color: var(--secondary-green);
+button {
+    padding: 15px 35px;
+    font-size: 1.1em;
+    background: linear-gradient(45deg, var(--secondary-green) 0%, #4CAF50 100%); /* زر بألوان متدرجة */
     color: var(--white);
     border: none;
-    padding: 15px 30px;
-    border-radius: 50px;
-    font-size: 1.1em;
-    font-weight: 700;
+    border-radius: 30px; /* أزرار دائرية أكثر */
     cursor: pointer;
+    margin-bottom: 40px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px var(--shadow-light);
-    margin-bottom: 30px;
+    box-shadow: 0 8px 16px var(--shadow-medium);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-#addUnitButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px var(--shadow-medium);
+button:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 20px var(--shadow-medium);
+    background: linear-gradient(45deg, #4CAF50 0%, var(--secondary-green) 100%);
 }
 
 .main-container {
     display: flex;
-    flex-wrap: wrap; /* السماح للعناصر بالانتقال إلى سطر جديد */
+    width: 98%; /* توسيع العرض قليلاً */
+    max-width: 1300px; /* تحديد أقصى عرض */
+    gap: 25px; /* زيادة المسافة بين المستطيلات الرئيسية */
     justify-content: center;
-    align-items: stretch;
-    width: 100%;
-    gap: 20px; /* مسافة بين المستطيلات */
-    max-width: 1200px;
+    flex-wrap: wrap; 
+    align-items: flex-start;
 }
 
 .drop-zone {
+    border: 2px solid var(--medium-grey); /* حدود خارجية للمستطيلات الرئيسية */
     background-color: var(--white);
-    border: 2px dashed var(--medium-grey);
-    border-radius: 15px;
-    padding: 20px;
-    flex: 1; /* جعل المناطق تتمدد لتملأ المساحة */
-    min-width: 250px;
-    min-height: 400px;
-    display: flex;
-    flex-direction: row; /* تصحيح: لجعل المربعات الصغيرة تترتب أفقياً */
-    flex-wrap: wrap; /* تصحيح: لجعل المربعات تنتقل لسطر جديد */
-    justify-content: flex-start; /* تصحيح: لتبدأ المربعات من اليسار */
-    align-items: flex-start; /* تصحيح: لتبدأ المربعات من الأعلى */
-    align-content: flex-start;
-    position: relative;
-    box-shadow: 0 8px 16px var(--shadow-light);
-    transition: border-color 0.3s ease;
-    gap: 10px; /* مسافة بين المربعات الصغيرة */
+    padding: 25px; /* بادينغ داخلي عادي */
+    border-radius: 15px; /* أركان أكثر دائرية */
+    box-shadow: 0 6px 18px var(--shadow-light); /* ظلال ناعمة */
+    box-sizing: border-box;
+    display: flex; 
+    flex-direction: column; 
+    align-items: stretch;
+    min-height: 300px; /* زيادة الحد الأدنى للارتفاع */
+    gap: 20px; /* زيادة المسافة بين العناصر الداخلية */
+    flex-grow: 1;
+    flex-basis: calc(33.33% - 25px); /* الحفاظ على تخطيط 3 أعمدة */
+    position: relative; /* لتمكين وضع العناوين النسبية له */
+    padding-top: 40px; /* زيادة padding-top لترك مساحة كافية بعد العنوان */
+    transition: all 0.3s ease; /* إضافة انتقال لتحسين التفاعل */
 }
 
-.drop-zone h2 {
-    font-size: 1.5em;
-    font-weight: 700;
-    text-align: center;
-    color: var(--dark-grey);
-    background-color: var(--light-grey);
-    border: 2px solid var(--dark-grey);
-    border-radius: 50px;
-    padding: 5px 20px;
-    margin: -40px auto 20px auto;
-    position: sticky;
-    top: -30px; /* يظل العنوان في الأعلى أثناء التمرير */
-    z-index: 10;
+.drop-zone:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px var(--shadow-medium);
 }
+
+/* تعديل موقع وشكل عناوين المستطيلات الرئيسية */
+.drop-zone h2 {
+    margin: -35px auto 10px auto; /* سحب العنوان للأعلى ووسيطته أفقياً، مسافة أقل من الأسفل */
+    color: var(--primary-blue);
+    font-size: 1.2em; /* تصغير حجم الخط */
+    font-weight: 700;
+    width: fit-content; 
+    max-width: calc(100% - 40px); 
+    text-align: center;
+    border-bottom: none; /* إزالة الخط السفلي */
+    padding: 5px 12px; /* بادينغ أصغر حول النص */
+    z-index: 10; 
+    background-color: var(--light-grey); 
+    border-radius: 8px; /* أركان دائرية بالكامل */
+    box-shadow: 0 2px 5px var(--shadow-light); /* ظل أصغر وأكثر نعومة */
+    /* إضافة حدود تتناسب مع المستطيل الأساسي */
+    border: 2px solid var(--medium-grey); /* حدود العنوان */
+    border-bottom-left-radius: 0; /* إزالة الحدود السفلية ليتصل بالمستطيل */
+    border-bottom-right-radius: 0;
+}
+
+/* الأنماط لمحتوى المربعات داخل مناطق drop-zone الرئيسية (Waiting & Out) */
+#waiting-workshop, #out-workshop {
+    display: flex;
+    flex-direction: row; 
+    flex-wrap: wrap;     
+    justify-content: flex-start; 
+    align-content: flex-start;   
+    align-items: flex-start; 
+    gap: 10px; /* زيادة المسافة بين المربعات */
+    padding: 10px; 
+    flex-grow: 1; 
+}
+
+/* نمط خاص لـ Waiting Workshop */
+#waiting-workshop {
+    border-color: var(--accent-orange); 
+    background-color: #FFF9ED; 
+}
+#waiting-workshop h2 {
+    color: var(--accent-orange);
+    border-color: var(--accent-orange); /* حدود العنوان بنفس لون المستطيل */
+    background-color: #FFF9ED; 
+}
+
+#workshop {
+    border-color: var(--primary-blue);
+    background-color: #EBF4FA; 
+}
+#workshop h2 {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue); /* حدود العنوان بنفس لون المستطيل */
+    background-color: #EBF4FA; 
+}
+
+#out-workshop {
+    border-color: var(--danger-red);
+    background-color: #FFF0F0; 
+}
+#out-workshop h2 {
+    color: var(--danger-red);
+    border-color: var(--danger-red); /* حدود العنوان بنفس لون المستطيل */
+    background-color: #FFF0F0; 
+}
+
 
 .workshop-sections {
-    display: flex; /* تصحيح: لجعل مناطق الورشة تترتب أفقياً */
-    flex-wrap: wrap;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 20px; 
     width: 100%;
-    margin-top: 15px;
+    flex-grow: 1;
 }
 
 .subsection-drop-zone {
-    background-color: var(--light-grey);
-    border: 2px dashed var(--medium-grey);
-    border-radius: 10px;
-    min-height: 150px;
-    flex: 1; /* لجعل مناطق الورشة تتمدد */
-    min-width: 120px;
-    display: flex;
-    flex-direction: row; /* تصحيح: لجعل المربعات تترتب أفقياً */
-    flex-wrap: wrap; /* تصحيح: لجعل المربعات تنتقل لسطر جديد */
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 20px 10px;
-    padding-top: 50px; /* مساحة أعلى للعنوان */
-    position: relative;
-    transition: background-color 0.3s ease;
-    gap: 10px;
+    border: 1px solid var(--medium-grey); 
+    background-color: var(--white);
+    border-radius: 10px; 
+    min-height: 150px; 
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    position: relative; 
+    padding-top: 65px; 
+
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
+    gap: 8px; 
+    align-content: start; 
+    justify-items: center; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-bottom: 10px; 
+    box-shadow: 0 2px 8px var(--shadow-light); 
+}
+
+.subsection-drop-zone:hover {
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    border-color: var(--primary-blue); 
 }
 
 .subsection-drop-zone h3 {
-    font-size: 1em;
-    color: var(--dark-grey);
-    background-color: var(--white);
-    border: 1px solid var(--dark-grey);
-    border-radius: 50px;
-    padding: 3px 15px;
-    position: absolute;
-    top: 10px;
     margin: 0;
-}
-
-.draggable-unit {
-    background-color: var(--primary-blue);
-    color: var(--white);
-    padding: 12px 20px;
-    border-radius: 10px;
-    text-align: center;
-    cursor: grab;
-    box-shadow: 0 2px 4px var(--shadow-medium);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    font-weight: 700;
-    min-width: 100px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: calc(25% - 10px); /* تصحيح: لجعل 4 مربعات في الصف مع المسافات */
-    box-sizing: border-box; /* لضمان أن العرض يشمل الحشو والحدود */
-}
-
-.draggable-unit.selected {
-    border: 2px solid var(--secondary-green);
-    box-shadow: 0 0 10px var(--secondary-green);
-    transform: scale(1.02);
-}
-
-.unit-text-content {
-    padding: 0 15px;
-}
-
-.delete-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: var(--danger-red);
-    color: var(--white);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1em;
-    cursor: pointer;
-    line-height: 1;
-    transition: background-color 0.2s;
-    font-weight: 700;
-}
-
-.delete-btn:hover {
-    background-color: #d15656;
-}
-
-.edit-unit-input {
-    width: calc(100% - 20px);
-    border: none;
-    background-color: var(--white);
     color: var(--dark-grey);
-    font-family: inherit;
+    font-size: 1.1em;
     font-weight: 700;
-    font-size: 1em;
-    padding: 5px;
-    border-radius: 5px;
+    position: absolute; 
+    top: 25px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 20px);
     text-align: center;
-    margin: auto;
+    border-bottom: 1px dashed var(--medium-grey); 
+    padding-bottom: 8px;
+    z-index: 10; 
+    background-color: var(--white); 
+    padding-top: 5px; 
+    border-radius: 8px 8px 0 0; 
 }
 
-/* media queries للتجاوب مع الأجهزة */
-@media (max-width: 1024px) {
+/* تأثير السحب والإفلات */
+.drop-zone.drag-over, .subsection-drop-zone.drag-over {
+    background-color: #D6E9F8; 
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.7); 
+    transform: scale(1.01); 
+}
+
+/* المربعات القابلة للسحب */
+.draggable-unit { 
+    width: 60px; 
+    height: 60px; 
+    background-color: var(--primary-blue); 
+    color: var(--white);
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    border-radius: 8px; 
+    box-shadow: 2px 2px 6px var(--shadow-medium);
+    font-weight: 700;
+    user-select: none;
+    transition: all 0.2s ease;
+    word-break: break-all;
+    text-align: center;
+    padding: 5px; 
+    font-size: 0.8em; 
+    line-height: 1.3;
+    z-index: 15; 
+}
+
+.draggable-unit:hover {
+    background-color: #3A7ACF; 
+    box-shadow: 3px 3px 8px var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+.draggable-unit.dragging {
+    opacity: 0.7; 
+    border: 3px dashed var(--accent-orange); 
+    transform: scale(1.08); 
+    box-shadow: 0 5px 15px var(--shadow-medium);
+}
+
+.draggable-unit input[type="text"] {
+    width: calc(100% - 10px); 
+    border: none;
+    background: rgba(255, 255, 255, 0.2); 
+    color: var(--white);
+    font-weight: 700;
+    text-align: center;
+    padding: 3px 5px;
+    margin-top: 3px; 
+    font-size: 0.8em;
+    outline: none;
+    border-radius: 4px;
+    caret-color: var(--white); 
+}
+
+/* ألوان خاصة للمربعات عند الانتقال لمناطق معينة */
+#waiting-workshop .draggable-unit {
+    background-color: var(--accent-orange);
+}
+#out-workshop .draggable-unit {
+    background-color: var(--danger-red);
+}
+
+/* تنسيق شريط التمرير (Scrollbar) - لمسة جمالية إضافية */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-grey);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3A7ACF;
+}
+
+/* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
+
+@media (max-width: 992px) {
     .main-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
+        flex-basis: calc(50% - 25px); /* عمودين في الشاشات المتوسطة */
+        max-width: 90%; /* توسيع العرض قليلاً */
     }
 
     .drop-zone {
-        width: 90%;
-        min-height: 350px;
+        flex-basis: calc(50% - 25px); /* عمودين */
+        min-height: 250px;
     }
 
     .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* أقسام فرعية أصغر */
+        gap: 15px;
     }
 }
 
 @media (max-width: 768px) {
     h1 {
-        font-size: 2em;
+        font-size: 2.2em;
+        margin-bottom: 20px;
     }
 
-    #addUnitButton {
+    button {
         padding: 12px 25px;
         font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .main-container {
+        flex-direction: column; /* عمود واحد في الشاشات الصغيرة جداً */
+        align-items: center;
+        gap: 40px; /* مسافة أكبر بين المستطيلات العمودية */
+        width: 100%; /* استخدام العرض الكامل */
+        max-width: 400px; /* تحديد أقصى عرض لكل مستطيل */
     }
 
     .drop-zone {
-        width: 95%;
-        padding: 15px;
-        min-height: 300px;
+        width: 100%; /* اجعل كل منطقة Drop Zone تأخذ العرض الكامل */
+        min-height: 200px;
+        padding: 20px;
+        border-radius: 10px;
     }
 
     .drop-zone h2 {
-        font-size: 1.2em;
-        margin: -35px auto 15px auto;
-        padding: 4px 18px;
+        font-size: 1em; /* تصغير حجم عنوان المنطقة الرئيسية */
+        margin: -30px auto 10px auto; /* تعديل المارجن ليناسب الحجم الجديد */
+        padding: 3px 10px;
+        border-width: 1px; /* حدود أرق قليلاً */
     }
-    
+
     .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* أقسام فرعية أصغر جداً */
         gap: 10px;
     }
 
     .subsection-drop-zone {
-        min-height: 100px;
-        padding-top: 40px;
+        min-height: 120px;
+        padding-top: 55px; /* تعديل padding-top للعناوين الفرعية */
+        border-width: 1px;
+        border-radius: 8px;
     }
 
     .subsection-drop-zone h3 {
-        font-size: 0.9em;
-        padding: 2px 10px;
+        font-size: 0.9em; /* تصغير حجم عنوان القسم الفرعي */
+        top: 20px; /* تعديل موقع العنوان الفرعي */
+        padding-bottom: 5px;
     }
 
     .draggable-unit {
-        width: calc(50% - 10px); /* على الأجهزة الصغيرة، مربعان في الصف */
+        width: 50px; /* تصغير حجم المربعات */
+        height: 50px;
+        font-size: 0.7em;
+        padding: 3px;
+    }
+
+    .draggable-unit input[type="text"] {
+        font-size: 0.7em;
     }
 }
