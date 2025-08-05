@@ -3,14 +3,14 @@
 
 :root {
     /* لوحة الألوان الجديدة العصرية */
-    --primary-blue: #007bff; /* أزرق نقي */
-    --secondary-green: #28a745; /* أخضر طبيعي */
-    --accent-orange: #ffc107; /* برتقالي دافئ */
-    --danger-red: #dc3545; /* أحمر عميق */
-    --light-grey: #f8f9fa; /* رمادي فاتح للخلفية */
-    --medium-grey: #e9ecef; /* رمادي متوسط للعناصر */
-    --dark-grey: #343a40; /* رمادي داكن للنصوص */
-    --white: #FFFFFF; /* أبيض */
+    --primary-blue: #5b9bd5;
+    --secondary-green: #00b06b;
+    --accent-orange: #ff914d;
+    --danger-red: #ff6f69;
+    --light-grey: #f0f4f8;
+    --medium-grey: #e9ecef;
+    --dark-grey: #343a40;
+    --white: #FFFFFF;
     --shadow-light: rgba(0, 0, 0, 0.08);
     --shadow-medium: rgba(0, 0, 0, 0.15);
 }
@@ -22,7 +22,7 @@ body {
     align-items: center;
     margin: 0;
     padding: 30px 20px;
-    background: linear-gradient(135deg, #f0f4f8 0%, #e0e6ea 100%); /* خلفية متدرجة عصرية */
+    background: linear-gradient(135deg, #f0f4f8 0%, #e0e6ea 100%);
     color: var(--dark-grey);
     overflow-x: hidden;
     min-height: 100vh;
@@ -40,22 +40,22 @@ h1 {
 button {
     padding: 15px 35px;
     font-size: 1.1em;
-    background: linear-gradient(45deg, #4CAF50 0%, #28a745 100%);
+    background: linear-gradient(45deg, var(--secondary-green) 0%, #008f58 100%);
     color: var(--white);
     border: none;
     border-radius: 30px;
     cursor: pointer;
     margin-bottom: 40px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(40, 167, 69, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 176, 107, 0.2);
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 button:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(40, 167, 69, 0.3);
-    background: linear-gradient(45deg, #28a745 0%, #4CAF50 100%);
+    box-shadow: 0 12px 20px rgba(0, 176, 107, 0.3);
+    background: linear-gradient(45deg, #008f58 0%, var(--secondary-green) 100%);
 }
 
 .main-container {
@@ -113,35 +113,34 @@ button:hover {
 
 /* الألوان الجديدة الجذابة للمستطيلات */
 #waiting-workshop {
-    border-color: #ff914d;
-    background-color: #fff8f0;
+    border-color: var(--accent-orange);
+    background-color: #fffaf0;
 }
 #waiting-workshop h2 {
-    color: #ff914d;
-    border-color: #ff914d;
-    background-color: #fff8f0;
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    background-color: #fffaf0;
 }
 
 #workshop {
-    border-color: #5d9cec;
+    border-color: var(--primary-blue);
     background-color: #f0f7ff;
 }
 #workshop h2 {
-    color: #5d9cec;
-    border-color: #5d9cec;
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
     background-color: #f0f7ff;
 }
 
 #out-workshop {
-    border-color: #ff6f69;
-    background-color: #fff0ef;
+    border-color: var(--danger-red);
+    background-color: #fff0f0;
 }
 #out-workshop h2 {
-    color: #ff6f69;
-    border-color: #ff6f69;
-    background-color: #fff0ef;
+    color: var(--danger-red);
+    border-color: var(--danger-red);
+    background-color: #fff0f0;
 }
-
 
 .workshop-sections {
     display: grid;
@@ -153,7 +152,7 @@ button:hover {
 
 .subsection-drop-zone {
     border: 1px solid var(--medium-grey);
-    background-color: var(--white);
+    background-color: #fdfdfd;
     border-radius: 10px;
     min-height: 150px;
     box-sizing: border-box;
@@ -161,7 +160,7 @@ button:hover {
     position: relative;
     padding-top: 65px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr)); /* تم التعديل ليناسب الحجم الجديد */
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
     gap: 8px;
     align-content: start;
     justify-items: center;
@@ -205,8 +204,8 @@ button:hover {
 
 /* المربعات القابلة للسحب (تم تصغير حجمها) */
 .draggable-unit {
-    width: 30px; /* تم تصغير الحجم */
-    height: 30px; /* تم تصغير الحجم */
+    width: 30px;
+    height: 30px;
     background-color: var(--primary-blue);
     color: var(--white);
     display: flex;
@@ -214,21 +213,21 @@ button:hover {
     justify-content: center;
     align-items: center;
     cursor: grab;
-    border-radius: 4px; /* تم تصغير الحدود */
+    border-radius: 4px;
     box-shadow: 2px 2px 6px var(--shadow-medium);
     font-weight: 700;
     user-select: none;
     transition: all 0.2s ease;
     word-break: break-all;
     text-align: center;
-    padding: 2px; /* تم تصغير البادينغ */
-    font-size: 0.6em; /* تم تصغير حجم الخط */
+    padding: 2px;
+    font-size: 0.6em;
     line-height: 1.3;
     z-index: 15;
 }
 
 .draggable-unit:hover {
-    background-color: #3A7ACF;
+    background-color: #4a90e2;
     box-shadow: 3px 3px 8px var(--shadow-medium);
     transform: translateY(-1px);
 }
@@ -241,13 +240,13 @@ button:hover {
 }
 
 .draggable-unit input[type="text"] {
-    width: calc(100% - 4px); /* تم التعديل */
+    width: calc(100% - 4px);
     border: none;
     background: rgba(255, 255, 255, 0.2);
     color: var(--white);
     font-weight: 700;
     text-align: center;
-    padding: 1px 2px; /* تم التعديل */
+    padding: 1px 2px;
     margin-top: 1px;
     font-size: 0.6em;
     outline: none;
@@ -280,89 +279,7 @@ button:hover {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #3A7ACF;
+    background: #4a90e2;
 }
 
-/* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
-
-@media (max-width: 992px) {
-    .main-container {
-        flex-basis: calc(50% - 25px);
-        max-width: 90%;
-    }
-
-    .drop-zone {
-        flex-basis: calc(50% - 25px);
-        min-height: 250px;
-    }
-
-    .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.2em;
-        margin-bottom: 20px;
-    }
-
-    button {
-        padding: 12px 25px;
-        font-size: 1em;
-        margin-bottom: 30px;
-    }
-
-    .main-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .drop-zone {
-        width: 100%;
-        min-height: 200px;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .drop-zone h2 {
-        font-size: 1em;
-        margin: -30px auto 10px auto;
-        padding: 3px 10px;
-        border-width: 1px;
-    }
-
-    .workshop-sections {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 10px;
-    }
-
-    .subsection-drop-zone {
-        min-height: 120px;
-        padding-top: 55px;
-        border-width: 1px;
-        border-radius: 8px;
-        grid-template-columns: repeat(auto-fit, minmax(25px, 1fr)); /* تم التعديل */
-    }
-
-    .subsection-drop-zone h3 {
-        font-size: 0.9em;
-        top: 20px;
-        padding-bottom: 5px;
-    }
-
-    .draggable-unit {
-        width: 25px; /* تم تصغير الحجم */
-        height: 25px; /* تم تصغير الحجم */
-        font-size: 0.6em;
-        padding: 2px;
-    }
-
-    .draggable-unit input[type="text"] {
-        font-size: 0.6em;
-    }
-}
+/*
