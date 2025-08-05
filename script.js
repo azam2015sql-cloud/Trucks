@@ -18,23 +18,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // تهيئة الوحدات
     function initializeUnits() {
-        // الوحدات من 3001 إلى 3221 (221 وحدة)
-        for (let i = 3001; i <= 3221; i++) {
-            createUnit(i.toString(), waitingWorkshop);
-        }
+        // مسح أي وحدات موجودة مسبقاً
+        document.querySelectorAll('.draggable-unit').forEach(unit => unit.remove());
         
-        // الوحدة 3234
-        createUnit('3234', waitingWorkshop);
+        // إنشاء الوحدات حسب التسلسل المطلوب
+        const unitNumbers = [
+            // 3001-3221 (221 وحدة)
+            ...Array.from({length: 221}, (_, i) => 3001 + i),
+            // 3234 (وحدة واحدة)
+            3234,
+            // 3562-3565 (4 وحدات)
+            ...Array.from({length: 4}, (_, i) => 3562 + i),
+            // 1551-1560 (10 وحدات)
+            ...Array.from({length: 10}, (_, i) => 1551 + i)
+        ];
         
-        // الوحدات من 3562 إلى 3565 (4 وحدات)
-        for (let i = 3562; i <= 3565; i++) {
-            createUnit(i.toString(), waitingWorkshop);
-        }
-        
-        // الوحدات من 1551 إلى 1560 (10 وحدات)
-        for (let i = 1551; i <= 1560; i++) {
-            createUnit(i.toString(), waitingWorkshop);
-        }
+        // إنشاء جميع الوحدات في منطقة الانتظار
+        unitNumbers.forEach(num => {
+            createUnit(num.toString(), waitingWorkshop);
+        });
         
         updateAllCounts();
     }
@@ -44,15 +46,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const unit = document.createElement('div');
         unit.className = 'draggable-unit';
         unit.textContent = text;
+        unit.draggable = true;
+        
+        // حدث السحب
+        unit.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', unit.textContent);
+            selectedUnit = unit;
+        });
         
         // حدث النقر على الوحدة
         unit.addEventListener('click', (e) => {
-            e.stopPropagation();
-            handleUnitClick(unit);
+            if (e.shiftKey) {
+                // نقل مباشر خارج الورشة مع الضغط على Shift
+                showConfirmDialog('هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟', () => {
+                    moveUnit(unit, outWorkshop);
+                });
+            } else {
+                handleUnitClick(unit);
+            }
         });
         
         parent.appendChild(unit);
         updateUnitColor(unit, parent);
+        return unit;
     }
     
     // تحديث لون الوحدة حسب المنطقة
@@ -61,6 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             unit.style.backgroundColor = 'var(--danger-red)';
         } else if (parent.id === 'waiting-workshop') {
             unit.style.backgroundColor = 'var(--accent-orange)';
+        } else if (parent.id === 'spare-part') {
+            unit.style.backgroundColor = 'var(--secondary-green)';
         } else {
             unit.style.backgroundColor = 'var(--primary-blue)';
         }
@@ -72,19 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentParent = unit.parentElement;
         
         if (currentParent.id === 'waiting-workshop') {
-            // النقل من الانتظار إلى الورشة
             showWorkshopDialog();
         } 
         else if (currentParent.id === 'spare-part') {
-            // النقل من انتظار الإسبير إلى الورشة
             showWorkshopDialog();
         }
         else if (Array.from(workshopSections).some(section => section === currentParent)) {
-            // النقل من الورشة إلى انتظار الإسبير
             moveToSparePart();
         }
         else if (currentParent.id === 'out-workshop') {
-            // النقل من خارج الورشة إلى الانتظار
             moveToWaiting();
         }
     }
@@ -92,20 +106,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // عرض حوار اختيار قسم الورشة
     function showWorkshopDialog() {
         workshopDialog.querySelectorAll('button[data-section]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.onclick = (e) => {
                 targetSection = document.getElementById(e.target.dataset.section);
                 workshopDialog.close();
                 moveUnit(selectedUnit, targetSection);
-            }, { once: true });
+            };
         });
         
-        document.getElementById('cancelWorkshopMove').addEventListener('click', () => {
+        document.getElementById('cancelWorkshopMove').onclick = () => {
             workshopDialog.close();
-            selectedUnit = null;
-            targetSection = null;
-        }, { once: true });
+        };
         
         workshopDialog.showModal();
+    }
+    
+    // عرض حوار التأكيد
+    function showConfirmDialog(message, confirmAction) {
+        confirmDialog.querySelector('#confirmMessage').textContent = message;
+        
+        document.getElementById('confirmYes').onclick = () => {
+            confirmAction();
+            confirmDialog.close();
+        };
+        
+        document.getElementById('confirmNo').onclick = () => {
+            confirmDialog.close();
+        };
+        
+        confirmDialog.showModal();
     }
     
     // نقل الوحدة إلى قسم انتظار الإسبير
@@ -122,18 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // نقل الوحدة مع التأكيد إذا كانت إلى خارج الورشة
     function moveUnit(unit, target) {
         if (target.id === 'out-workshop') {
-            confirmDialog.querySelector('#confirmMessage').textContent = 'هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟';
-            
-            document.getElementById('confirmYes').addEventListener('click', () => {
+            showConfirmDialog('هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟', () => {
                 performMove(unit, target);
-                confirmDialog.close();
-            }, { once: true });
-            
-            document.getElementById('confirmNo').addEventListener('click', () => {
-                confirmDialog.close();
-            }, { once: true });
-            
-            confirmDialog.showModal();
+            });
         } else {
             performMove(unit, target);
         }
@@ -144,8 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         target.appendChild(unit);
         updateUnitColor(unit, target);
         updateAllCounts();
-        selectedUnit = null;
-        targetSection = null;
     }
     
     // تحديث جميع العدادت
@@ -166,7 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // تحديث عداد منطقة محددة
     function updateCount(zone, counter) {
-        counter.textContent = zone.querySelectorAll('.draggable-unit').length;
+        if (counter) {
+            counter.textContent = zone.querySelectorAll('.draggable-unit').length;
+        }
     }
     
     // تحديث عداد الورشة الكلي
@@ -178,15 +197,26 @@ document.addEventListener('DOMContentLoaded', () => {
         workshopCount.textContent = total;
     }
     
-    // تهيئة التطبيق
-    initializeUnits();
-    
-    // منع الانتقال الافتراضي عند النقر على مناطق الإسقاط
+    // أحداث السحب والإفلات لمناطق الإسقاط
     document.querySelectorAll('.drop-zone, .subsection-drop-zone').forEach(zone => {
-        zone.addEventListener('click', (e) => {
-            if (e.target === zone) {
-                e.stopPropagation();
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('drag-over');
+        });
+        
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            if (selectedUnit) {
+                moveUnit(selectedUnit, zone);
             }
         });
     });
+    
+    // تهيئة التطبيق
+    initializeUnits();
 });
