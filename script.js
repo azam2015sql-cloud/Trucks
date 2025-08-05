@@ -4,16 +4,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const outWorkshop = document.getElementById('out-workshop');
     const waitingWorkshop = document.getElementById('waiting-workshop');
     const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
+    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
 
-    let selectedUnit = null; // الوحدة المحددة حاليًا للنقل
+    let draggedItem = null;
     let unitCount = 0;
     
+    // متغيرات لمنطق اللمس الطويل
+    let longPressTimer;
+    const longPressDelay = 500; // 500 مللي ثانية تعتبر لمسة طويلة
+
+    // دالة للتحقق مما إذا كان الجهاز يدعم اللمس
+    function isTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    }
+
     // دالة لفرز الوحدات أبجديًا
     function sortUnitsAlphabetically(container) {
         const units = Array.from(container.querySelectorAll('.draggable-unit'));
         units.sort((a, b) => {
-            const textA = a.querySelector('.unit-text-content').textContent.trim().toLowerCase();
-            const textB = b.querySelector('.unit-text-content').textContent.trim().toLowerCase();
+            const textA = a.textContent.trim().toLowerCase();
+            const textB = b.textContent.trim().toLowerCase();
             return textA.localeCompare(textB, 'ar', { sensitivity: 'base' });
         });
         units.forEach(unit => {
@@ -32,104 +42,123 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // دالة لتحديد وحدة
-    function selectUnit(unit) {
-        // إزالة التحديد من أي وحدة سابقة
-        if (selectedUnit) {
-            selectedUnit.classList.remove('selected');
+    // دالة لمعالجة إفلات الوحدة
+    function dropItem(targetDropZone) {
+        if (draggedItem && draggedItem.parentElement !== targetDropZone) {
+            if (draggedItem.parentElement) {
+                draggedItem.parentElement.removeChild(draggedItem);
+            }
+            
+            targetDropZone.appendChild(draggedItem);
+            updateUnitColor(draggedItem, targetDropZone);
+            sortUnitsAlphabetically(targetDropZone);
+
+            // إزالة تأثير السحب
+            draggedItem.classList.remove('dragging');
+            draggedItem = null;
         }
-        // تحديد الوحدة الجديدة
-        selectedUnit = unit;
-        selectedUnit.classList.add('selected');
     }
 
-    // دالة لنقل الوحدة المحددة إلى منطقة جديدة
-    function moveSelectedUnitTo(targetDropZone) {
-        if (selectedUnit) {
-            // التحقق من أن الوحدة المحددة ليست في نفس المنطقة بالفعل
-            if (selectedUnit.parentElement !== targetDropZone) {
-                targetDropZone.appendChild(selectedUnit);
-                updateUnitColor(selectedUnit, targetDropZone);
-                sortUnitsAlphabetically(targetDropZone);
-            }
-            // إزالة التحديد بعد النقل
-            selectedUnit.classList.remove('selected');
-            selectedUnit = null;
-        }
-    }
-    
-    // تهيئة مناطق الإسقاط
-    const allDropZones = [workshop, outWorkshop, waitingWorkshop, ...Array.from(subsectionDropZones)];
-    allDropZones.forEach(zone => {
-        zone.addEventListener('click', (e) => {
-            e.preventDefault();
-            // إذا كان هناك وحدة محددة، قم بنقلها إلى هذه المنطقة
-            if (selectedUnit) {
-                moveSelectedUnitTo(zone);
+    // تهيئة مناطق الإسقاط بناءً على نوع الجهاز
+    function setupDropZones() {
+        allDropZones.forEach(element => {
+            // منطق الماوس (يعمل دائمًا)
+            element.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                element.classList.add('drag-over');
+            });
+            element.addEventListener('dragleave', () => {
+                element.classList.remove('drag-over');
+            });
+            element.addEventListener('drop', (e) => {
+                e.preventDefault();
+                element.classList.remove('drag-over');
+                if (draggedItem && draggedItem.parentElement !== element) {
+                    dropItem(element);
+                }
+            });
+            
+            // منطق اللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
+            if (isTouchDevice()) {
+                element.addEventListener('touchstart', (e) => {
+                    // إذا كان هناك عنصر "ممسوك"، فإن لمس المنطقة سيؤدي إلى إفلاته
+                    if (draggedItem) {
+                        e.preventDefault();
+                        e.stopPropagation(); // منع انتقال الحدث
+                        dropItem(element);
+                    }
+                });
             }
         });
-    });
-
-    // تفويض الأحداث للتعامل مع النقر على زر الحذف
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-btn')) {
-            e.stopPropagation(); // منع النقر من الوصول إلى الوحدة أو المنطقة
-            const unitToDelete = e.target.closest('.draggable-unit');
-            if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
-                unitToDelete.parentElement.removeChild(unitToDelete);
-                if (selectedUnit === unitToDelete) {
-                    selectedUnit = null;
-                }
-            }
-        }
-    });
+    }
 
     // دالة إنشاء وحدة جديدة
     function createDraggableUnit(initialText = null) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
-        
-        const unitTextSpan = document.createElement('span');
-        unitTextSpan.className = 'unit-text-content';
-        unitTextSpan.textContent = initialText || `وحدة رقم ${++unitCount}`;
-        
-        // إنشاء زر الحذف
-        const deleteBtn = document.createElement('span');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = '×';
-        
-        // إضافة المحتوى وزر الحذف إلى الوحدة
-        newUnit.appendChild(unitTextSpan);
-        newUnit.appendChild(deleteBtn);
-        
-        // حدث النقر على الوحدة لتحديدها
-        newUnit.addEventListener('click', (e) => {
-            e.stopPropagation(); // منع النقر من الوصول إلى المنطقة الخلفية
-            selectUnit(newUnit);
+        newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`; 
+        newUnit.draggable = true;
+
+        // منطق السحب بالماوس (يعمل دائمًا)
+        newUnit.addEventListener('dragstart', (e) => {
+            draggedItem = newUnit;
+            e.dataTransfer.setData('text/plain', '');
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => newUnit.classList.add('dragging'), 0);
+        });
+        newUnit.addEventListener('dragend', () => {
+            newUnit.classList.remove('dragging');
+            draggedItem = null;
         });
 
-        // دبل كليك لتعديل النص (سواء بالماوس أو باللمس)
-        newUnit.addEventListener('dblclick', (e) => {
-            e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
+        // منطق السحب باللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
+        if (isTouchDevice()) {
+            newUnit.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+
+                // إذا كان هناك عنصر آخر مسحوب، قم بإفلاته أولاً
+                if (draggedItem && draggedItem !== newUnit) {
+                    draggedItem.classList.remove('dragging');
+                    draggedItem = null;
+                }
+
+                // بدء مؤقت اللمس الطويل
+                longPressTimer = setTimeout(() => {
+                    // بعد انتهاء المؤقت، "التقط" الوحدة
+                    draggedItem = newUnit;
+                    newUnit.classList.add('dragging');
+                    // منع سلوك التمرير فقط عند بدء السحب
+                    e.preventDefault();
+                }, longPressDelay);
+            });
+
+            newUnit.addEventListener('touchend', () => {
+                // إلغاء المؤقت إذا رفعت إصبعك قبل أن ينتهي
+                clearTimeout(longPressTimer);
+            });
             
-            const currentText = unitTextSpan.textContent;
+            newUnit.addEventListener('touchcancel', () => {
+                // إلغاء المؤقت إذا تم إلغاء اللمس (مثلاً: مكالمة هاتفية)
+                clearTimeout(longPressTimer);
+            });
+        }
+        
+        // دبل كليك لتعديل النص
+        newUnit.addEventListener('dblclick', (e) => {
+            const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
             inputField.value = currentText;
             inputField.className = 'edit-unit-input';
 
-            newUnit.innerHTML = ''; // مسح المحتوى الحالي
+            newUnit.textContent = '';
             newUnit.appendChild(inputField);
+
             inputField.focus();
 
             const saveChanges = () => {
-                const newText = inputField.value.trim() || currentText;
-                
-                newUnit.innerHTML = '';
-                unitTextSpan.textContent = newText;
-                newUnit.appendChild(unitTextSpan);
-                newUnit.appendChild(deleteBtn);
-
+                newUnit.textContent = inputField.value.trim() || currentText;
                 if (newUnit.contains(inputField)) {
                     newUnit.removeChild(inputField);
                 }
@@ -154,28 +183,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // إضافة المربعات الأولية
     const totalInitialUnits = 236;
-    let specialNumbersForLastBlock = [1551, 1552, 1553, 1554, 1555, 1556, 1557, 1558, 1560];
+    const numberedUnitsStart = 3001;
+    const numberedUnitsEnd = 3221;
 
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
-
-        if (i < 221) {
-            unitText = `${3001 + i}`;
-        } else if (i === 221) {
-            unitText = '3234';
-        } else if (i > 221 && i < 226) {
-            unitText = `${3562 + (i - 222)}`;
+        if (i < (numberedUnitsEnd - numberedUnitsStart + 1)) {
+            unitText = `${numberedUnitsStart + i}`;
         } else {
-            const lastNumIndex = i - 226;
-            if (lastNumIndex < specialNumbersForLastBlock.length) {
-                unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
-            } else {
-                unitText = `وحدة إضافية ${++unitCount}`;
-            }
+            unitText = `وحدة رقم ${unitCount + 1}`;
+            unitCount++;
         }
         createDraggableUnit(unitText);
     }
     
     // الفرز النهائي بعد إضافة جميع المربعات
     sortUnitsAlphabetically(waitingWorkshop);
+    
+    // تهيئة مناطق الإسقاط
+    setupDropZones();
 });
