@@ -116,7 +116,6 @@ button:hover {
 #waiting-workshop {
     border-color: var(--accent-orange);
     background-color: #fff9f5;
-    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
@@ -142,7 +141,6 @@ button:hover {
 #out-workshop {
     border-color: var(--danger-red);
     background-color: #fcf6f6;
-    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
@@ -172,7 +170,6 @@ button:hover {
     transition: all 0.2s ease;
     position: relative;
     padding-top: 65px;
-    /* تم التعديل لعرض 3 مربعات في كل صف */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
