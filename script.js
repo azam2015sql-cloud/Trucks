@@ -4,13 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const outWorkshop = document.getElementById('out-workshop');
     const waitingWorkshop = document.getElementById('waiting-workshop');
     const subsectionDropZones = document.querySelectorAll('.subsection-drop-zone');
+    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
 
     let draggedItem = null;
     let unitCount = 0;
     
-    // متغير لتتبع آخر نقرة مزدوجة
-    let lastTapTime = 0;
-    const doubleTapDelay = 300; // 300 مللي ثانية بين النقرتين
+    // دالة للتحقق مما إذا كان الجهاز يدعم اللمس
+    function isTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    }
 
     // دالة لفرز الوحدات أبجديًا
     function sortUnitsAlphabetically(container) {
@@ -47,46 +49,43 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUnitColor(draggedItem, targetDropZone);
             sortUnitsAlphabetically(targetDropZone);
 
-            // إزالة تأثير السحب وتفريغ المتغير
+            // إزالة تأثير السحب
             draggedItem.classList.remove('dragging');
             draggedItem = null;
         }
     }
 
-    // تهيئة مناطق الإسقاط (للمستخدم العادي بالنقر مرة واحدة)
-    function setupDropZone(element) {
-        // أحداث الماوس القديمة
-        element.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            element.classList.add('drag-over');
-        });
-        element.addEventListener('dragleave', () => {
-            element.classList.remove('drag-over');
-        });
-        element.addEventListener('drop', (e) => {
-            e.preventDefault();
-            element.classList.remove('drag-over');
-            if (draggedItem && draggedItem.parentElement !== element) {
-                dropItem(element);
-            }
-        });
-
-        // حدث اللمس لإفلات الوحدة
-        element.addEventListener('touchstart', (e) => {
-            if (draggedItem) {
-                e.preventDefault(); // منع سلوك اللمس الافتراضي
-                dropItem(element);
+    // تهيئة مناطق الإسقاط بناءً على نوع الجهاز
+    function setupDropZones() {
+        allDropZones.forEach(element => {
+            // منطق الماوس (يعمل دائمًا)
+            element.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                element.classList.add('drag-over');
+            });
+            element.addEventListener('dragleave', () => {
+                element.classList.remove('drag-over');
+            });
+            element.addEventListener('drop', (e) => {
+                e.preventDefault();
+                element.classList.remove('drag-over');
+                if (draggedItem && draggedItem.parentElement !== element) {
+                    dropItem(element);
+                }
+            });
+            
+            // منطق اللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
+            if (isTouchDevice()) {
+                element.addEventListener('touchstart', (e) => {
+                    if (draggedItem) {
+                        e.preventDefault();
+                        dropItem(element);
+                    }
+                });
             }
         });
     }
-    
-    // قائمة بجميع مناطق الإسقاط الصالحة
-    const allDropZones = [waitingWorkshop, outWorkshop, ...Array.from(subsectionDropZones), workshop];
-
-    // تطبيق تهيئة مناطق الإسقاط على جميع المناطق
-    allDropZones.forEach(zone => {
-        setupDropZone(zone);
-    });
 
     // دالة إنشاء وحدة جديدة
     function createDraggableUnit(initialText = null) {
@@ -95,31 +94,26 @@ document.addEventListener('DOMContentLoaded', () => {
         newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`; 
         newUnit.draggable = true;
 
-        // أحداث السحب بالماوس
+        // منطق السحب بالماوس (يعمل دائمًا)
         newUnit.addEventListener('dragstart', (e) => {
             draggedItem = newUnit;
             e.dataTransfer.setData('text/plain', '');
             e.dataTransfer.effectAllowed = 'move';
             setTimeout(() => newUnit.classList.add('dragging'), 0);
         });
-
         newUnit.addEventListener('dragend', () => {
             newUnit.classList.remove('dragging');
             draggedItem = null;
         });
 
-        // أحداث اللمس (هنا التغيير الرئيسي)
-        newUnit.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // منع السلوك الافتراضي (التمرير أو التحديد)
-            const currentTime = new Date().getTime();
-            const tapDifference = currentTime - lastTapTime;
+        // منطق السحب باللمس (يتم إضافته فقط إذا كان الجهاز يدعم اللمس)
+        if (isTouchDevice()) {
+            newUnit.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
 
-            if (tapDifference < doubleTapDelay && tapDifference > 0) {
-                // حدثت نقرتان بسرعة، هذا هو النقر المزدوج
-                e.stopPropagation(); // منع انتقال الحدث إلى أي عنصر آخر
-
-                if (draggedItem) {
-                    // إذا كان هناك عنصر آخر مسحوب بالفعل، قم بإفلاته أولاً
+                // إذا كان هناك عنصر آخر مسحوب، قم بإفلاته
+                if (draggedItem && draggedItem !== newUnit) {
                     draggedItem.classList.remove('dragging');
                     draggedItem = null;
                 }
@@ -127,15 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // "التقاط" الوحدة الجديدة
                 draggedItem = newUnit;
                 draggedItem.classList.add('dragging');
-
-                // إظهار رسالة أو أيقونة لتوضيح أن الوحدة أصبحت "ممسوكة" (اختياري)
-            }
-            lastTapTime = currentTime;
-        });
-
+            });
+        }
+        
         // دبل كليك لتعديل النص
         newUnit.addEventListener('dblclick', () => {
-            // منطق تعديل النص كما هو
             const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
@@ -165,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         waitingWorkshop.appendChild(newUnit); 
-        newUnit.style.backgroundColor = 'var(--accent-orange)';
+        updateUnitColor(newUnit, waitingWorkshop);
     }
     
     // زر الإضافة
@@ -189,4 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // الفرز النهائي بعد إضافة جميع المربعات
     sortUnitsAlphabetically(waitingWorkshop);
-});vvvv
+    
+    // تهيئة مناطق الإسقاط
+    setupDropZones();
+});
