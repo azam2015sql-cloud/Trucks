@@ -1,296 +1,192 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const addUnitButton = document.getElementById('addUnitButton');
+    // العناصر الرئيسية
     const waitingWorkshop = document.getElementById('waiting-workshop');
-    const allDropZones = document.querySelectorAll('.drop-zone, .subsection-drop-zone');
-    const unitSearch = document.getElementById('unitSearch');
-    const clearSearch = document.getElementById('clearSearch');
+    const workshopSections = document.querySelectorAll('.subsection-drop-zone');
+    const outWorkshop = document.getElementById('out-workshop');
+    const workshopDialog = document.getElementById('workshopDialog');
     const confirmDialog = document.getElementById('confirmDialog');
-    const confirmYes = document.getElementById('confirmYes');
-    const confirmNo = document.getElementById('confirmNo');
     
+    // الإحصائيات
     const waitingCount = document.getElementById('waiting-count');
     const workshopCount = document.getElementById('workshop-count');
+    const sparePartCount = document.getElementById('spare-part-count');
     const outCount = document.getElementById('out-count');
-
-    let draggedItem = null;
-    let unitCount = 0;
-    let targetDropZoneForConfirm = null;
-
-    // تحميل البيانات المحفوظة
-    function loadData() {
-        const savedData = localStorage.getItem('workshopUnitsData');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            
-            // مسح الوحدات الحالية
-            document.querySelectorAll('.draggable-unit').forEach(u => u.remove());
-            
-            // إعادة إنشاء الوحدات من البيانات المحفوظة
-            data.waiting.forEach(text => createDraggableUnit(text));
-            data.workshop.forEach(item => {
-                const unit = createDraggableUnit(item.text);
-                const section = document.getElementById(item.section);
-                if (section) {
-                    section.appendChild(unit);
-                    updateUnitColor(unit, section);
-                }
-            });
-            data.out.forEach(text => {
-                const unit = createDraggableUnit(text);
-                document.getElementById('out-workshop').appendChild(unit);
-                updateUnitColor(unit, document.getElementById('out-workshop'));
-            });
-            unitCount = data.waiting.length + data.workshop.length + data.out.length;
-        } else {
-            // تهيئة وحدات افتراضية إذا لم تكن هناك بيانات محفوظة
-            const totalInitialUnits = 236;
-            const numberedUnitsStart = 3001;
-            const numberedUnitsEnd = 3221;
-
-            for (let i = 0; i < totalInitialUnits; i++) {
-                let unitText;
-                if (i < (numberedUnitsEnd - numberedUnitsStart + 1)) {
-                    unitText = `${numberedUnitsStart + i}`;
-                } else {
-                    unitText = `وحدة رقم ${unitCount + 1}`;
-                    unitCount++;
-                }
-                createDraggableUnit(unitText);
-            }
+    
+    // المتغيرات
+    let selectedUnit = null;
+    let targetSection = null;
+    
+    // تهيئة الوحدات
+    function initializeUnits() {
+        // الوحدات من 3001 إلى 3221 (221 وحدة)
+        for (let i = 3001; i <= 3221; i++) {
+            createUnit(i.toString(), waitingWorkshop);
         }
-        updateStats();
-        sortAllZones();
+        
+        // الوحدة 3234
+        createUnit('3234', waitingWorkshop);
+        
+        // الوحدات من 3562 إلى 3565 (4 وحدات)
+        for (let i = 3562; i <= 3565; i++) {
+            createUnit(i.toString(), waitingWorkshop);
+        }
+        
+        // الوحدات من 1551 إلى 1560 (10 وحدات)
+        for (let i = 1551; i <= 1560; i++) {
+            createUnit(i.toString(), waitingWorkshop);
+        }
+        
+        updateAllCounts();
     }
-
-    // حفظ البيانات
-    function saveData() {
-        const data = {
-            waiting: Array.from(waitingWorkshop.querySelectorAll('.draggable-unit')).map(u => u.textContent),
-            workshop: Array.from(document.getElementById('workshop').querySelectorAll('.draggable-unit')).map(u => ({
-                text: u.textContent,
-                section: u.parentElement.id
-            })),
-            out: Array.from(document.getElementById('out-workshop').querySelectorAll('.draggable-unit')).map(u => u.textContent)
-        };
-        localStorage.setItem('workshopUnitsData', JSON.stringify(data));
-    }
-
-    // فرز الوحدات أبجديًا
-    function sortUnitsAlphabetically(container) {
-        const units = Array.from(container.querySelectorAll('.draggable-unit'));
-        units.sort((a, b) => {
-            const textA = a.textContent.trim().toLowerCase();
-            const textB = b.textContent.trim().toLowerCase();
-            return textA.localeCompare(textB, 'ar', { sensitivity: 'base' });
+    
+    // إنشاء وحدة جديدة
+    function createUnit(text, parent) {
+        const unit = document.createElement('div');
+        unit.className = 'draggable-unit';
+        unit.textContent = text;
+        
+        // حدث النقر على الوحدة
+        unit.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleUnitClick(unit);
         });
-        units.forEach(unit => {
-            container.appendChild(unit);
-        });
+        
+        parent.appendChild(unit);
+        updateUnitColor(unit, parent);
     }
-
-    // فرز جميع المناطق
-    function sortAllZones() {
-        allDropZones.forEach(zone => sortUnitsAlphabetically(zone));
-    }
-
-    // تحديث إحصائيات الوحدات
-    function updateStats() {
-        waitingCount.textContent = waitingWorkshop.querySelectorAll('.draggable-unit').length;
-        workshopCount.textContent = document.getElementById('workshop').querySelectorAll('.draggable-unit').length;
-        outCount.textContent = document.getElementById('out-workshop').querySelectorAll('.draggable-unit').length;
-    }
-
+    
     // تحديث لون الوحدة حسب المنطقة
-    function updateUnitColor(unit, dropZoneElement) {
-        if (dropZoneElement.id === 'out-workshop') {
+    function updateUnitColor(unit, parent) {
+        if (parent.id === 'out-workshop') {
             unit.style.backgroundColor = 'var(--danger-red)';
-        } else if (dropZoneElement.id === 'waiting-workshop') {
+        } else if (parent.id === 'waiting-workshop') {
             unit.style.backgroundColor = 'var(--accent-orange)';
         } else {
             unit.style.backgroundColor = 'var(--primary-blue)';
         }
     }
-
-    // معالجة الإفلات
-    function handleDrop(targetDropZone) {
-        if (!draggedItem || !targetDropZone) return;
+    
+    // التعامل مع نقر الوحدة
+    function handleUnitClick(unit) {
+        selectedUnit = unit;
+        const currentParent = unit.parentElement;
         
-        // إذا كانت المنطقة الهدف هي خارج الورشة، نطلب التأكيد
-        if (targetDropZone.id === 'out-workshop' && draggedItem.parentElement.id !== 'out-workshop') {
-            targetDropZoneForConfirm = targetDropZone;
+        if (currentParent.id === 'waiting-workshop') {
+            // النقل من الانتظار إلى الورشة
+            showWorkshopDialog();
+        } 
+        else if (currentParent.id === 'spare-part') {
+            // النقل من انتظار الإسبير إلى الورشة
+            showWorkshopDialog();
+        }
+        else if (Array.from(workshopSections).some(section => section === currentParent)) {
+            // النقل من الورشة إلى انتظار الإسبير
+            moveToSparePart();
+        }
+        else if (currentParent.id === 'out-workshop') {
+            // النقل من خارج الورشة إلى الانتظار
+            moveToWaiting();
+        }
+    }
+    
+    // عرض حوار اختيار قسم الورشة
+    function showWorkshopDialog() {
+        workshopDialog.querySelectorAll('button[data-section]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                targetSection = document.getElementById(e.target.dataset.section);
+                workshopDialog.close();
+                moveUnit(selectedUnit, targetSection);
+            }, { once: true });
+        });
+        
+        document.getElementById('cancelWorkshopMove').addEventListener('click', () => {
+            workshopDialog.close();
+            selectedUnit = null;
+            targetSection = null;
+        }, { once: true });
+        
+        workshopDialog.showModal();
+    }
+    
+    // نقل الوحدة إلى قسم انتظار الإسبير
+    function moveToSparePart() {
+        const sparePart = document.getElementById('spare-part');
+        moveUnit(selectedUnit, sparePart);
+    }
+    
+    // نقل الوحدة إلى منطقة الانتظار
+    function moveToWaiting() {
+        moveUnit(selectedUnit, waitingWorkshop);
+    }
+    
+    // نقل الوحدة مع التأكيد إذا كانت إلى خارج الورشة
+    function moveUnit(unit, target) {
+        if (target.id === 'out-workshop') {
+            confirmDialog.querySelector('#confirmMessage').textContent = 'هل أنت متأكد من نقل هذه الوحدة خارج الورشة؟';
+            
+            document.getElementById('confirmYes').addEventListener('click', () => {
+                performMove(unit, target);
+                confirmDialog.close();
+            }, { once: true });
+            
+            document.getElementById('confirmNo').addEventListener('click', () => {
+                confirmDialog.close();
+            }, { once: true });
+            
             confirmDialog.showModal();
-            return;
+        } else {
+            performMove(unit, target);
         }
+    }
+    
+    // تنفيذ نقل الوحدة
+    function performMove(unit, target) {
+        target.appendChild(unit);
+        updateUnitColor(unit, target);
+        updateAllCounts();
+        selectedUnit = null;
+        targetSection = null;
+    }
+    
+    // تحديث جميع العدادت
+    function updateAllCounts() {
+        updateCount(waitingWorkshop, waitingCount);
+        updateWorkshopCount();
+        updateCount(document.getElementById('spare-part'), sparePartCount);
+        updateCount(outWorkshop, outCount);
         
-        // إذا كانت المنطقة الهدف مختلفة عن المنطقة الحالية للوحدة
-        if (draggedItem.parentElement !== targetDropZone) {
-            targetDropZone.appendChild(draggedItem);
-            updateUnitColor(draggedItem, targetDropZone);
-            sortUnitsAlphabetically(targetDropZone);
-            updateStats();
-            saveData();
-        }
-        
-        resetDraggedItem();
+        // تحديث العدادت في العناوين
+        document.querySelectorAll('.drop-zone, .subsection-drop-zone').forEach(zone => {
+            const badge = zone.querySelector('.count-badge');
+            if (badge) {
+                badge.textContent = zone.querySelectorAll('.draggable-unit').length;
+            }
+        });
     }
-
-    // إعادة تعيين العنصر المسحوب
-    function resetDraggedItem() {
-        if (draggedItem) {
-            draggedItem.classList.remove('dragging');
-            draggedItem.style.removeProperty('position');
-            draggedItem.style.removeProperty('top');
-            draggedItem.style.removeProperty('left');
-            draggedItem.style.removeProperty('z-index');
-            draggedItem.style.removeProperty('opacity');
-            draggedItem.style.removeProperty('transform');
-            draggedItem = null;
-        }
-        document.querySelectorAll('.drag-over').forEach(zone => zone.classList.remove('drag-over'));
+    
+    // تحديث عداد منطقة محددة
+    function updateCount(zone, counter) {
+        counter.textContent = zone.querySelectorAll('.draggable-unit').length;
     }
-
-    // إنشاء وحدة قابلة للسحب
-    function createDraggableUnit(initialText = null) {
-        const newUnit = document.createElement('div');
-        newUnit.className = 'draggable-unit';
-        newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
-        newUnit.draggable = true;
-
-        // حدث بدء السحب
-        newUnit.addEventListener('dragstart', (e) => {
-            draggedItem = newUnit;
-            e.dataTransfer.setData('text/plain', '');
-            e.dataTransfer.effectAllowed = 'move';
-            setTimeout(() => newUnit.classList.add('dragging'), 0);
+    
+    // تحديث عداد الورشة الكلي
+    function updateWorkshopCount() {
+        let total = 0;
+        workshopSections.forEach(section => {
+            total += section.querySelectorAll('.draggable-unit').length;
         });
-
-        // حدث انتهاء السحب
-        newUnit.addEventListener('dragend', resetDraggedItem);
-
-        // حدث النقر المزدوج للتعديل
-        newUnit.addEventListener('dblclick', (e) => {
-            const currentText = newUnit.textContent;
-            const inputField = document.createElement('input');
-            inputField.type = 'text';
-            inputField.value = currentText;
-            inputField.className = 'edit-unit-input';
-            e.stopPropagation();
-
-            newUnit.textContent = '';
-            newUnit.appendChild(inputField);
-            inputField.focus();
-
-            const saveChanges = () => {
-                newUnit.textContent = inputField.value.trim() || currentText;
-                if (newUnit.contains(inputField)) {
-                    newUnit.removeChild(inputField);
-                }
-                sortUnitsAlphabetically(newUnit.parentElement);
-                saveData();
-            };
-
-            inputField.addEventListener('blur', saveChanges);
-            inputField.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    saveChanges();
-                    inputField.blur();
-                }
-            });
-        });
-
-        // حدث الضغط المطول للحذف (لأجهزة اللمس)
-        let longPressTimer;
-        newUnit.addEventListener('touchstart', (e) => {
-            longPressTimer = setTimeout(() => {
-                e.preventDefault();
-                showDeleteConfirmation(newUnit);
-            }, 1000);
-        });
-
-        newUnit.addEventListener('touchend', () => {
-            clearTimeout(longPressTimer);
-        });
-
-        waitingWorkshop.appendChild(newUnit);
-        updateUnitColor(newUnit, waitingWorkshop);
-        updateStats();
-        return newUnit;
+        workshopCount.textContent = total;
     }
-
-    // عرض تأكيد الحذف
-    function showDeleteConfirmation(unit) {
-        draggedItem = unit;
-        targetDropZoneForConfirm = document.getElementById('out-workshop');
-        confirmDialog.showModal();
-    }
-
-    // تهيئة مناطق الإسقاط
-    allDropZones.forEach(element => {
-        // أحداث السحب للماوس
-        element.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            element.classList.add('drag-over');
-        });
-
-        element.addEventListener('dragleave', () => {
-            element.classList.remove('drag-over');
-        });
-
-        element.addEventListener('drop', (e) => {
-            e.preventDefault();
-            element.classList.remove('drag-over');
-            handleDrop(element);
-        });
-
-        // أحداث النقر لللمس
-        element.addEventListener('click', () => {
-            if (draggedItem) {
-                handleDrop(element);
+    
+    // تهيئة التطبيق
+    initializeUnits();
+    
+    // منع الانتقال الافتراضي عند النقر على مناطق الإسقاط
+    document.querySelectorAll('.drop-zone, .subsection-drop-zone').forEach(zone => {
+        zone.addEventListener('click', (e) => {
+            if (e.target === zone) {
+                e.stopPropagation();
             }
         });
     });
-
-    // أحداث البحث
-    unitSearch.addEventListener('input', () => {
-        const searchTerm = unitSearch.value.trim().toLowerCase();
-        document.querySelectorAll('.draggable-unit').forEach(unit => {
-            const unitText = unit.textContent.toLowerCase();
-            unit.style.display = unitText.includes(searchTerm) ? 'flex' : 'none';
-        });
-    });
-
-    clearSearch.addEventListener('click', () => {
-        unitSearch.value = '';
-        document.querySelectorAll('.draggable-unit').forEach(unit => {
-            unit.style.display = 'flex';
-        });
-    });
-
-    // أحداث حوار التأكيد
-    confirmYes.addEventListener('click', () => {
-        if (draggedItem && targetDropZoneForConfirm) {
-            targetDropZoneForConfirm.appendChild(draggedItem);
-            updateUnitColor(draggedItem, targetDropZoneForConfirm);
-            sortUnitsAlphabetically(targetDropZoneForConfirm);
-            updateStats();
-            saveData();
-        }
-        confirmDialog.close();
-        resetDraggedItem();
-    });
-
-    confirmNo.addEventListener('click', () => {
-        confirmDialog.close();
-        resetDraggedItem();
-    });
-
-    // تهيئة التطبيق
-    addUnitButton.addEventListener('click', () => {
-        createDraggableUnit();
-        saveData();
-    });
-
-    // تحميل البيانات عند البدء
-    loadData();
 });
