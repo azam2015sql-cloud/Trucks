@@ -3,10 +3,10 @@
 
 :root {
     /* لوحة الألوان الجديدة العصرية */
-    --primary-blue: #4a90e2; /* أزرق سماوي */
-    --secondary-green: #50e3c2; /* أخضر نعناعي */
-    --accent-orange: #ff9f43; /* برتقالي دافئ */
-    --danger-red: #ff6b6b; /* أحمر مرجاني */
+    --primary-blue: #4d7c9a; /* أزرق هادئ */
+    --secondary-green: #5eb5a6; /* أخضر فيروزي */
+    --accent-orange: #f28c5a; /* برتقالي محروق */
+    --danger-red: #d15c5c; /* أحمر داكن */
     --light-grey: #f0f4f8; /* رمادي فاتح للخلفية */
     --medium-grey: #e9ecef; /* رمادي متوسط للعناصر */
     --dark-grey: #334e68; /* رمادي داكن للنصوص */
@@ -40,7 +40,7 @@ h1 {
 button {
     padding: 15px 35px;
     font-size: 1.1em;
-    background: linear-gradient(45deg, var(--secondary-green) 0%, #3ec2a2 100%);
+    background: linear-gradient(45deg, var(--secondary-green) 0%, #4a9184 100%);
     color: var(--white);
     border: none;
     border-radius: 30px;
@@ -55,7 +55,7 @@ button {
 button:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 12px 20px rgba(80, 227, 194, 0.3);
-    background: linear-gradient(45deg, #3ec2a2 0%, var(--secondary-green) 100%);
+    background: linear-gradient(45deg, #4a9184 0%, var(--secondary-green) 100%);
 }
 
 .main-container {
@@ -111,11 +111,11 @@ button:hover {
     border-bottom-right-radius: 0;
 }
 
-/* الألوان الجديدة الجذابة للمستطيلات */
+/* الألوان الجديدة الجذابة للمستطيلات وتعديل التنسيق */
 #waiting-workshop {
-    border-color: #f7a35c;
-    background-color: #fff8f0;
-    /* التعديلات هنا لضمان 9 مربعات في الصف */
+    border-color: var(--accent-orange);
+    background-color: #fff9f5;
+    /* التعديل هنا لضمان 9 مربعات في الصف */
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 8px; /* مسافة بين المربعات */
@@ -123,25 +123,25 @@ button:hover {
     padding: 10px;
 }
 #waiting-workshop h2 {
-    color: #f7a35c;
-    border-color: #f7a35c;
-    background-color: #fff8f0;
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    background-color: #fff9f5;
 }
 
 #workshop {
-    border-color: #6a95f4;
-    background-color: #f0f7ff;
+    border-color: var(--primary-blue);
+    background-color: #f6f9fc;
 }
 #workshop h2 {
-    color: #6a95f4;
-    border-color: #6a95f4;
-    background-color: #f0f7ff;
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    background-color: #f6f9fc;
 }
 
 #out-workshop {
-    border-color: #ff5e62;
-    background-color: #fff0f0;
-    /* التعديلات هنا لضمان 9 مربعات في الصف */
+    border-color: var(--danger-red);
+    background-color: #fcf6f6;
+    /* التعديل هنا لضمان 9 مربعات في الصف */
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 8px; /* مسافة بين المربعات */
@@ -149,9 +149,9 @@ button:hover {
     padding: 10px;
 }
 #out-workshop h2 {
-    color: #ff5e62;
-    border-color: #ff5e62;
-    background-color: #fff0f0;
+    color: var(--danger-red);
+    border-color: var(--danger-red);
+    background-color: #fcf6f6;
 }
 
 .workshop-sections {
@@ -206,17 +206,9 @@ button:hover {
     border-radius: 8px 8px 0 0;
 }
 
-/* تأثير السحب والإفلات */
-.drop-zone.drag-over, .subsection-drop-zone.drag-over {
-    background-color: #D6E9F8;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 20px rgba(74, 144, 226, 0.7);
-    transform: scale(1.01);
-}
-
 /* المربعات القابلة للسحب (تم تصغير حجمها إلى النصف) */
 .draggable-unit {
-    width: auto; /* تم التعديل */
+    width: auto;
     height: 30px;
     background-color: var(--primary-blue);
     color: var(--white);
@@ -296,4 +288,29 @@ button:hover {
 
 /* --- استعلامات الوسائط (Media Queries) للاستجابة --- */
 
-@media (
+@media (max-width: 992px) {
+    .main-container {
+        flex-basis: calc(50% - 25px);
+        max-width: 90%;
+    }
+
+    .drop-zone {
+        flex-basis: calc(50% - 25px);
+        min-height: 250px;
+    }
+
+    .workshop-sections {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 1em;
