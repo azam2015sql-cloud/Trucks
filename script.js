@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function sortUnitsAlphabetically(container) {
         const units = Array.from(container.querySelectorAll('.draggable-unit'));
         units.sort((a, b) => {
-            const textA = a.textContent.trim().toLowerCase();
-            const textB = b.textContent.trim().toLowerCase();
+            const textA = a.querySelector('.unit-text-content').textContent.trim().toLowerCase();
+            const textB = b.querySelector('.unit-text-content').textContent.trim().toLowerCase();
             return textA.localeCompare(textB, 'ar', { sensitivity: 'base' });
         });
         units.forEach(unit => {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // دالة إنشاء وحدة جديدة
-    function createDraggableUnit(initialText = null) {
+    function createDraggableUnit(initialText) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
         
@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // إضافة المربعات الأولية
     const totalInitialUnits = 235;
     let specialNumbersForLastBlock = [1551, 1552, 1553, 1554, 1555, 1556, 1557, 1558, 1560];
+    let specialBlockIndex = 0;
 
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
@@ -156,8 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i > 221 && i < 226) {
             unitText = `${3562 + (i - 222)}`;
         } else {
-            const lastNumIndex = i - 226;
-            unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
+            unitText = `${specialNumbersForLastBlock[specialBlockIndex]}`;
+            specialBlockIndex++;
         }
         createDraggableUnit(unitText);
     }
