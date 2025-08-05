@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function sortUnitsAlphabetically(container) {
         const units = Array.from(container.querySelectorAll('.draggable-unit'));
         units.sort((a, b) => {
-            const textA = a.querySelector('.unit-text-content').textContent.trim().toLowerCase();
-            const textB = b.querySelector('.unit-text-content').textContent.trim().toLowerCase();
+            const textA = a.textContent.trim().toLowerCase();
+            const textB = b.textContent.trim().toLowerCase();
             return textA.localeCompare(textB, 'ar', { sensitivity: 'base' });
         });
         units.forEach(unit => {
@@ -70,37 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // تفويض الأحداث للتعامل مع النقر على زر الحذف
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-btn')) {
-            e.stopPropagation(); // منع النقر من الوصول إلى الوحدة أو المنطقة
-            const unitToDelete = e.target.closest('.draggable-unit');
-            if (confirm('هل أنت متأكد أنك تريد حذف هذه الوحدة؟')) {
-                unitToDelete.parentElement.removeChild(unitToDelete);
-                if (selectedUnit === unitToDelete) {
-                    selectedUnit = null;
-                }
-            }
-        }
-    });
-
     // دالة إنشاء وحدة جديدة
     function createDraggableUnit(initialText = null) {
         const newUnit = document.createElement('div');
         newUnit.className = 'draggable-unit';
-        
-        const unitTextSpan = document.createElement('span');
-        unitTextSpan.className = 'unit-text-content';
-        unitTextSpan.textContent = initialText || `وحدة رقم ${++unitCount}`;
-        
-        // إنشاء زر الحذف
-        const deleteBtn = document.createElement('span');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = '×';
-        
-        // إضافة المحتوى وزر الحذف إلى الوحدة
-        newUnit.appendChild(unitTextSpan);
-        newUnit.appendChild(deleteBtn);
+        newUnit.textContent = initialText || `وحدة رقم ${++unitCount}`;
         
         // حدث النقر على الوحدة لتحديدها
         newUnit.addEventListener('click', (e) => {
@@ -111,25 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // دبل كليك لتعديل النص (سواء بالماوس أو باللمس)
         newUnit.addEventListener('dblclick', (e) => {
             e.stopPropagation(); // منع النقر المزدوج من تحديد الوحدة
-            
-            const currentText = unitTextSpan.textContent;
+            const currentText = newUnit.textContent;
             const inputField = document.createElement('input');
             inputField.type = 'text';
             inputField.value = currentText;
             inputField.className = 'edit-unit-input';
 
-            newUnit.innerHTML = ''; // مسح المحتوى الحالي
+            newUnit.textContent = '';
             newUnit.appendChild(inputField);
             inputField.focus();
 
             const saveChanges = () => {
-                const newText = inputField.value.trim() || currentText;
-                
-                newUnit.innerHTML = '';
-                unitTextSpan.textContent = newText;
-                newUnit.appendChild(unitTextSpan);
-                newUnit.appendChild(deleteBtn);
-
+                newUnit.textContent = inputField.value.trim() || currentText;
                 if (newUnit.contains(inputField)) {
                     newUnit.removeChild(inputField);
                 }
@@ -159,18 +126,26 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < totalInitialUnits; i++) {
         let unitText;
 
+        // من المربع رقم 1 حتى 221 (i=0 to 220)
         if (i < 221) {
             unitText = `${3001 + i}`;
-        } else if (i === 221) {
+        } 
+        // المربع رقم 222 (i=221)
+        else if (i === 221) {
             unitText = '3234';
-        } else if (i > 221 && i < 226) {
+        }
+        // من المربع رقم 223 حتى 226 (i=222 to 225)
+        else if (i > 221 && i < 226) {
             unitText = `${3562 + (i - 222)}`;
-        } else {
+        }
+        // من المربع رقم 227 حتى الأخير (i=226 to 235)
+        else {
             const lastNumIndex = i - 226;
             if (lastNumIndex < specialNumbersForLastBlock.length) {
                 unitText = `${specialNumbersForLastBlock[lastNumIndex]}`;
             } else {
-                unitText = `وحدة إضافية ${++unitCount}`;
+                unitText = `وحدة رقم ${unitCount + 1}`;
+                unitCount++;
             }
         }
         createDraggableUnit(unitText);
